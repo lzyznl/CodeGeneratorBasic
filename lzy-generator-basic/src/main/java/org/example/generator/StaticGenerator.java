@@ -1,4 +1,4 @@
-package org.example.Util;
+package org.example.generator;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -10,18 +10,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
- * 生成静态文件，本质是文件的拷贝
+ * @author lzy
+ * @date 2021-01-06
+ * 静态代码生成器
  */
-public class staticFileUtil {
-
-    public static void main(String[] args) throws IOException {
+public class StaticGenerator {
+    public static void main(String[] args) {
         String projectPath = System.getProperty("user.dir");
-        String srcPath = projectPath+File.separator+"lzy-generator-demo-project"+File.separator+"acm-template";
-        String destPath = projectPath;
-        File srcFile = new File(srcPath);
-        File destFile = new File(destPath);
-        copFileByRecursion(srcFile,destFile);
+        String srcPath = projectPath+File.separator+"lzy-generator-demo-project/acm-template";
+        copFileByHutool(srcPath,projectPath);
     }
+
 
     /**
      * 直接使用Hutool工具类中的方法进行开发
