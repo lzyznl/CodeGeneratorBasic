@@ -1,14 +1,12 @@
-package org.example.generator;
+package com.lzy.generator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.example.model.MainTemplateConfig;
+import com.lzy.model.MainTemplateConfig;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author lzy
@@ -50,7 +48,8 @@ public class DynamicGenerator {
         Template template = cfg.getTemplate(templateName);
 
         //指定模板引擎生成的文件路径
-        Writer output = new FileWriter(outputPath+File.separator+GeneratorFileName);
+        FileOutputStream fileOutputStream = new FileOutputStream(outputPath+File.separator+GeneratorFileName);
+        Writer output = new OutputStreamWriter(fileOutputStream,StandardCharsets.UTF_8);
         template.process(Model,output);
         output.close();
     }

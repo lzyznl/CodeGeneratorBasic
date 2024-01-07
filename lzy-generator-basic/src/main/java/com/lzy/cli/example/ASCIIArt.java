@@ -1,5 +1,5 @@
 
-package org.example.cli.example;
+package com.lzy.cli.example;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

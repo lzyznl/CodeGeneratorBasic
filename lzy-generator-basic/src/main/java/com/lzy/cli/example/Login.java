@@ -1,4 +1,4 @@
-package org.example.cli.example;
+package com.lzy.cli.example;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -26,6 +26,6 @@ public class Login implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        new CommandLine(new Login()).execute("--user","lzy","-p","123456","-c","123456");
+        new CommandLine(new Login()).execute("--user","lzy","-p","-c");
     }
 }

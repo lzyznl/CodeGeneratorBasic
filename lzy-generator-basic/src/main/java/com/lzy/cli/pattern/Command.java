@@ -1,4 +1,4 @@
-package org.example.cli.pattern;
+package com.lzy.cli.pattern;
 
 /**
  * @author lzy

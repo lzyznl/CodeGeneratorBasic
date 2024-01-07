@@ -1,7 +1,7 @@
-package org.example.generator;
+package com.lzy.generator;
 
 import freemarker.template.TemplateException;
-import org.example.model.MainTemplateConfig;
+import com.lzy.model.MainTemplateConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class MainGenerator {
 
     public static void main(String[] args) throws TemplateException, IOException {
         MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
-        mainTemplateConfig.setOutputText("程序运行结果是:");
+        mainTemplateConfig.setOutputText("fact:");
         mainTemplateConfig.setAuthor("lzyyyy");
         mainTemplateConfig.setLoop(true);
         doCodeGenerator(mainTemplateConfig);
@@ -27,12 +27,13 @@ public class MainGenerator {
      */
     public static void doCodeGenerator(Object Model) throws TemplateException, IOException {
         String projectPath = System.getProperty("user.dir");
-        String StaticInputFilePath = projectPath+File.separator+"lzy-generator-demo-project/acm-template";
+        File parentFile = new File(projectPath).getParentFile();
+        String StaticInputFilePath = parentFile.getPath()+File.separator+"lzy-generator-demo-project/acm-template";
         String StaticOutputFilePath = projectPath;
         //生成静态文件
         StaticGenerator.copFileByHutool(StaticInputFilePath,StaticOutputFilePath);
         //在静态文件的基础上生成动态文件
-        String DynamicInputFilePath = projectPath+File.separator+"lzy-generator-basic/src/main/resources/template";
+        String DynamicInputFilePath = projectPath+File.separator+"/src/main/resources/template";
         String DynamicOutputFilePath = StaticOutputFilePath+File.separator+"acm-template/src/com/lzy/acm";
         String templateName = "MainTemplate.java.ftl";
         String generatorFileName = "MainTemplate.java";
