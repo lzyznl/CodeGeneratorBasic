@@ -1,15 +1,15 @@
-package com.lzy.maker.cli.command.CommandType;
+package ${basePackage}.maker.cli.command.CommandType;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
-import com.lzy.maker.model.DataModel;
+import ${basePackage}.maker.model.DataModel;
 import picocli.CommandLine.Command;
 
 import java.lang.reflect.Field;
 
 /**
- * @author lzy
- * @date 2024-01-07
+ * @author ${author}
+ * @date ${createTime}
  * 生成文件的配置参数类
  */
 @Command(name = "config", version = "Config 1.0", mixinStandardHelpOptions = true)

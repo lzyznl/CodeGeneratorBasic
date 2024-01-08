@@ -7,11 +7,11 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 /**
- * @author lzy
- * @date 2024-01-07
+ * @author lzyaaa
+ * @date 2024-01-08
  * 命令执行类
  */
-@Command(name = "lzy", version = "lzy 1.0", mixinStandardHelpOptions = true)
+@Command(name = "acm-template-pro-generator", version = "acm-template-pro-generator 1.0", mixinStandardHelpOptions = true)
 public class CommandExecutor implements Runnable{
 
     private final CommandLine commandLine;

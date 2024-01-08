@@ -13,6 +13,10 @@ public class MetaManger {
 
     private static volatile Meta meta;
 
+    private MetaManger(){
+
+    }
+
     /**
      * 双检锁单例模式
      * @return
@@ -34,7 +38,7 @@ public class MetaManger {
         return meta;
     }
 
-    public Meta getMetaModel(){
+    public static Meta getMetaModel(){
         return getMeta();
     }
 }

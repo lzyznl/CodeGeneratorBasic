@@ -1,9 +1,10 @@
 package com.lzy.maker.generator.file;
 
+
+import cn.hutool.core.io.FileUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import com.lzy.maker.model.DataModel;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,8 +34,12 @@ public class DynamicFileGenerator {
         //获取到对应的模板
         Template template = cfg.getTemplate(templateName);
 
+        String finalOutputPath = outputPath+File.separator+ GeneratorFileName;
+        if(!FileUtil.exist(finalOutputPath)){
+            FileUtil.touch(finalOutputPath);
+        }
         //指定模板引擎生成的文件路径
-        FileOutputStream fileOutputStream = new FileOutputStream(outputPath+File.separator+GeneratorFileName);
+        FileOutputStream fileOutputStream = new FileOutputStream(finalOutputPath);
         Writer output = new OutputStreamWriter(fileOutputStream,StandardCharsets.UTF_8);
         template.process(Model,output);
         output.close();

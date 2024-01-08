@@ -1,8 +1,9 @@
 {
   "name": "acm-template-pro-generator",
   "description": "ACM模板示例代码生成器",
+  "basePackage": "com.lzy",
   "version": "1.0",
-  "author": "lzy",
+  "author": "lzyaaa",
   "createTime" : "2024-01-08",
   "fileConfig": {
     "inputRootPath": "D:\\Java_Project\\Code\\lzy-generator\\lzy-generator-demo-project\\acm-template-pro",
@@ -36,21 +37,24 @@
         "type": "String",
         "description": "作者注释",
         "defaultValue": "lzy",
-        "abbr": "-a"
+        "abbr": "-a",
+        "fullName": "--authorName"
       },
       {
         "fieldName": "outputText",
         "type": "String",
         "description": "输出信息",
         "defaultValue": "result:",
-        "abbr": "-o"
+        "abbr": "-o",
+        "fullName": "--outputText"
       },
       {
         "fieldName": "loop",
-        "type": "Boolean",
+        "type": "boolean",
         "description": "是否开启循环",
         "defaultValue": false,
-        "abbr": "-l"
+        "abbr": "-l",
+        "fullName": "--loop"
       }
     ]
   }

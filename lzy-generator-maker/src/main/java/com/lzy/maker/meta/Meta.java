@@ -16,6 +16,7 @@ public class Meta {
 
     private String name;
     private String description;
+    private String basePackage;
     private String version;
     private String author;
     private String createTime;
@@ -53,6 +54,7 @@ public class Meta {
             private String description;
             private Object defaultValue;
             private String abbr;
+            private String fullName;
         }
     }
 }
