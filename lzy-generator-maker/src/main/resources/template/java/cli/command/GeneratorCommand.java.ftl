@@ -1,9 +1,9 @@
-package ${basePackage}.maker.cli.command.CommandType;
+package ${basePackage}.cli.command.CommandType;
 
 
 import freemarker.template.TemplateException;
-import ${basePackage}.maker.generator.file.FileGenerator;
-import ${basePackage}.maker.model.DataModel;
+import ${basePackage}.generator.file.FileGenerator;
+import ${basePackage}.model.DataModel;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
