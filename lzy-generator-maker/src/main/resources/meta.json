@@ -1,0 +1,57 @@
+{
+  "name": "acm-template-pro-generator",
+  "description": "ACM模板示例代码生成器",
+  "version": "1.0",
+  "author": "lzy",
+  "createTime" : "2024-01-08",
+  "fileConfig": {
+    "inputRootPath": "D:\\Java_Project\\Code\\lzy-generator\\lzy-generator-demo-project\\acm-template-pro",
+    "outputRootPath": "generated",
+    "type": "dir",
+    "files": [
+      {
+        "inputPath": "src/com/lzy/acm/MainTemplate.java.ftl",
+        "outputPath": "src/com/lzy/acm/MainTemplate.java",
+        "type": "file",
+        "generateType": "Dynamic"
+      },
+      {
+        "inputPath": ".gitignore",
+        "outputPath": ".gitignore",
+        "type": "file",
+        "generateType": "Static"
+      },
+      {
+        "inputPath": "README.md",
+        "outputPath": "README.md",
+        "type": "file",
+        "generateType": "Static"
+      }
+    ]
+  },
+  "modelConfig": {
+    "models": [
+      {
+        "fieldName": "author",
+        "type": "String",
+        "description": "作者注释",
+        "defaultValue": "lzy",
+        "abbr": "-a"
+      },
+      {
+        "fieldName": "outputText",
+        "type": "String",
+        "description": "输出信息",
+        "defaultValue": "result:",
+        "abbr": "-o"
+      },
+      {
+        "fieldName": "loop",
+        "type": "Boolean",
+        "description": "是否开启循环",
+        "defaultValue": false,
+        "abbr": "-l"
+      }
+    ]
+  }
+}
