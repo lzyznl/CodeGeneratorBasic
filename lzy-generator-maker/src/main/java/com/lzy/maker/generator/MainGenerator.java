@@ -46,33 +46,51 @@ public class MainGenerator {
                 +"java";
 
 
-        finalOutputPath = OutPutProjectPath+File.separator+"model";
-        finalInputPath = InputProjectPath+File.separator+"model"+File.separator;
-        String templateName = "DataModel.java.ftl";
-        String generatedTemplateName = "DataModel.java";
+        finalOutputPath = OutPutProjectPath+File.separator+"model"+File.separator+"DataModel.java";
+        finalInputPath = InputProjectPath+File.separator+"model"+File.separator+"DataModel.java.ftl";
 
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,templateName,generatedTemplateName,metaModel);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
 
         /**
          * 生成命令执行路径
          */
-        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command";
-        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command";
+        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ConfigCommand.java";
+        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ConfigCommand.java.ftl";
 
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
-                "ConfigCommand.java.ftl","ConfigCommand.java",metaModel);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
 
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
-                "GeneratorCommand.java.ftl","GeneratorCommand.java",metaModel);
+        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"GeneratorCommand.java";
+        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"GeneratorCommand.java.ftl";
 
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
-                "ListCommand.java.ftl","ListCommand.java",metaModel);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
 
-        finalOutputPath = OutPutProjectPath+File.separator+"cli";
-        finalInputPath = InputProjectPath+File.separator+"cli";
+        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ListCommand.java";
+        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ListCommand.java.ftl";
 
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
-                "CommandExecutor.java.ftl","CommandExecutor.java",metaModel);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
+
+        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"CommandExecutor.java";
+        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"CommandExecutor.java.ftl";
+
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
+
+        finalInputPath = InputProjectPath+File.separator+"Main.java.ftl";
+        finalOutputPath = OutPutProjectPath+File.separator+"Main.java";
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
+
+        finalInputPath = InputProjectPath+File.separator+"generator"+File.separator+"DynamicFileGenerator,java.ftl";
+        finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"DynamicFileGenerator.java";
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
+
+        finalInputPath = InputProjectPath+File.separator+"generator"+File.separator+"MainFileGenerator.java.ftl";
+        finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"MainFileGenerator.java";
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
+
+
+        finalInputPath = InputProjectPath+File.separator+"generator"+File.separator+"StaticFileGenerator.java.ftl";
+        finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"StaticFileGenerator.java";
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
+
 
     }
 }

@@ -1,4 +1,4 @@
-package com.lzy.maker.generator.file;
+package com.lzy.generator.file;
 
 
 import cn.hutool.core.io.FileUtil;
@@ -10,8 +10,8 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 /**
- * @author lzy
- * @date 2021-01-08
+ * @author lzyaaa
+ * @date 2024-01-08
  * 动态代码生成器
  */
 public class DynamicFileGenerator {

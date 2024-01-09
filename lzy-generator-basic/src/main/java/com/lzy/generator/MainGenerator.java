@@ -16,7 +16,7 @@ public class MainGenerator {
     public static void main(String[] args) throws TemplateException, IOException {
         MainTemplateConfig mainTemplateConfig = new MainTemplateConfig();
         mainTemplateConfig.setOutputText("fact:");
-        mainTemplateConfig.setAuthor("lzyyyy");
+        mainTemplateConfig.setAuthor("lzyyyyzxqqqq");
         mainTemplateConfig.setLoop(true);
         doCodeGenerator(mainTemplateConfig);
     }
@@ -33,10 +33,8 @@ public class MainGenerator {
         //生成静态文件
         StaticGenerator.copFileByHutool(StaticInputFilePath,StaticOutputFilePath);
         //在静态文件的基础上生成动态文件
-        String DynamicInputFilePath = projectPath+File.separator+"/src/main/resources/template";
-        String DynamicOutputFilePath = StaticOutputFilePath+File.separator+"acm-template/src/com/lzy/acm";
-        String templateName = "MainTemplate.java.ftl";
-        String generatorFileName = "MainTemplate.java";
-        DynamicGenerator.dynamicGenerator(DynamicInputFilePath,DynamicOutputFilePath,templateName,generatorFileName,Model);
+        String DynamicInputFilePath = projectPath+File.separator+"/src/main/resources/template/MainTemplate.java.ftl";
+        String DynamicOutputFilePath = StaticOutputFilePath+File.separator+"acm-template/src/com/lzy/acm/MainTemplate.java";
+        DynamicGenerator.dynamicGenerator(DynamicInputFilePath,DynamicOutputFilePath,Model);
     }
 }

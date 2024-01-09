@@ -2,7 +2,7 @@ package com.lzy.maker.cli.command;
 
 
 import freemarker.template.TemplateException;
-import com.lzy.maker.generator.file.FileGenerator;
+import com.lzy.maker.generator.file.MainFileGenerator;
 import com.lzy.maker.model.DataModel;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -47,7 +47,7 @@ public class GeneratorCommand implements Runnable{
         dataModel.setOutputText(outputText);
         dataModel.setAuthor(author);
         try {
-            FileGenerator.doCodeGenerator(dataModel);
+            MainFileGenerator.doCodeGenerator(dataModel);
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
