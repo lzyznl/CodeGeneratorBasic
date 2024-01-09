@@ -1,9 +1,9 @@
-package com.lzy.maker.cli.command.CommandType;
+package com.lzy.cli.command.CommandType;
 
 
 import freemarker.template.TemplateException;
-import com.lzy.maker.generator.file.FileGenerator;
-import com.lzy.maker.model.DataModel;
+import com.lzy.generator.file.FileGenerator;
+import com.lzy.model.DataModel;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -18,24 +18,30 @@ import java.io.IOException;
 @Command(name = "generate", version = "Generator 1.0", mixinStandardHelpOptions = true)
 public class GeneratorCommand implements Runnable{
 
+
     /**
      * 作者注释
      */
     @Option(names = {"-a", "--authorName"}, arity = "0..1",description = "作者注释", interactive = true
     ,defaultValue = "lzy",echo = true)
     private String author;
+
+
     /**
      * 输出信息
      */
     @Option(names = {"-o", "--outputText"}, arity = "0..1",description = "输出信息", interactive = true
     ,defaultValue = "result:",echo = true)
     private String outputText;
+
+
     /**
      * 是否开启循环
      */
     @Option(names = {"-l", "--loop"}, arity = "0..1",description = "是否开启循环", interactive = true
-    ,defaultValue = "false",echo = true)
+    ,defaultValue = false,echo = true)
     private boolean loop;
+
 
     @Override
     public void run() {

@@ -1,4 +1,4 @@
-package com.lzy.maker.cli.command.CommandType;
+package com.lzy.cli.command.CommandType;
 
 import cn.hutool.core.io.FileUtil;
 import picocli.CommandLine.Command;

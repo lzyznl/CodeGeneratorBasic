@@ -20,57 +20,59 @@ public class MainGenerator {
 
     public static void main(String[] args) throws TemplateException, IOException {
         Meta metaModel = MetaManger.getMetaModel();
+        String basePackage = metaModel.getBasePackage();
+        String parseBasePackage = StrUtil.join(File.separator,StrUtil.split(basePackage,"."));
+        /**
+         * 最终生成文件路径
+         */
+        String finalOutputPath;
+        /**
+         * 最终输入文件路径
+         */
+        String finalInputPath;
 
-        //获取输出根路径
+        //获取文件输出根路径
         String OutputRootPath = System.getProperty("user.dir");
-        String OutPutProjectPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName();
+        String OutPutProjectPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()
+                +File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+parseBasePackage;
         if(!FileUtil.exist(OutPutProjectPath)){
             FileUtil.mkdir(OutPutProjectPath);
         }
 
-        String basePackage = metaModel.getBasePackage();
-        String parseBasePackage = StrUtil.join(File.separator,StrUtil.split(basePackage,"."));
+        //获取文件的输入根路径
+        ClassPathResource classPathResource = new ClassPathResource("");
+        String resourceAbsolutePath = classPathResource.getAbsolutePath();
+        String InputProjectPath = resourceAbsolutePath+File.separator+"template"+File.separator
+                +"java";
 
-        /**
-         * 生成model输出路径
-         */
-        String finalOutputPath = OutPutProjectPath+File.separator+"src"+File.separator
-                +"main"+File.separator+"java"+File.separator+parseBasePackage+File.separator+"model";
-        String templateName = "MainTemplate.java.ftl";
+
+        finalOutputPath = OutPutProjectPath+File.separator+"model";
+        finalInputPath = InputProjectPath+File.separator+"model"+File.separator;
+        String templateName = "DataModel.java.ftl";
         String generatedTemplateName = "DataModel.java";
+
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,templateName,generatedTemplateName,metaModel);
 
         /**
          * 生成命令执行路径
          */
-        String CommandFinalOutputPath = OutPutProjectPath+File.separator+"src"+File.separator
-                +"main"+File.separator+"java"+File.separator+parseBasePackage+File.separator+"cli"+File.separator+"command";
-        String CommandExecutorOutputPath = OutPutProjectPath+File.separator+"src"+File.separator
-                +"main"+File.separator+"java"+File.separator+parseBasePackage+File.separator+"cli";
+        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command";
+        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command";
 
-        //获取模板的输入路径
-        ClassPathResource classPathResource = new ClassPathResource("");
-        String resourceAbsolutePath = classPathResource.getAbsolutePath();
-        String CommandFinalInputPath = resourceAbsolutePath+File.separator+"template"+File.separator
-                +"java"+File.separator+"cli"+File.separator+"command";
-        String CommandExecutorPath = resourceAbsolutePath+File.separator+"template"+File.separator
-                +"java"+File.separator+"cli";
-
-        String ModelFinalInputPath = resourceAbsolutePath+File.separator+"template"+File.separator
-                +"java"+File.separator+"model";
-
-        DynamicFileGenerator.dynamicGenerator(CommandFinalInputPath,CommandFinalOutputPath,
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
                 "ConfigCommand.java.ftl","ConfigCommand.java",metaModel);
 
-        DynamicFileGenerator.dynamicGenerator(CommandFinalInputPath,CommandFinalOutputPath,
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
                 "GeneratorCommand.java.ftl","GeneratorCommand.java",metaModel);
 
-        DynamicFileGenerator.dynamicGenerator(CommandFinalInputPath,CommandFinalOutputPath,
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
                 "ListCommand.java.ftl","ListCommand.java",metaModel);
 
-        DynamicFileGenerator.dynamicGenerator(CommandExecutorPath,CommandExecutorOutputPath,
-                "CommandExecutor.java.ftl","CommandExecutor.java",metaModel);
+        finalOutputPath = OutPutProjectPath+File.separator+"cli";
+        finalInputPath = InputProjectPath+File.separator+"cli";
 
-        DynamicFileGenerator.dynamicGenerator(ModelFinalInputPath,finalOutputPath,templateName,generatedTemplateName,metaModel);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,
+                "CommandExecutor.java.ftl","CommandExecutor.java",metaModel);
 
     }
 }

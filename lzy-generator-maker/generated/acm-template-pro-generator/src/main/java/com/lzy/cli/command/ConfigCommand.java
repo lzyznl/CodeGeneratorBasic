@@ -1,8 +1,8 @@
-package com.lzy.maker.cli.command.CommandType;
+package com.lzy.cli.command.CommandType;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
-import com.lzy.maker.model.DataModel;
+import com.lzy.model.DataModel;
 import picocli.CommandLine.Command;
 
 import java.lang.reflect.Field;

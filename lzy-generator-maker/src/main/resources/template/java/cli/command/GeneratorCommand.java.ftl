@@ -26,7 +26,7 @@ public class GeneratorCommand implements Runnable{
      */
     </#if>
     @Option(names = {"${modelInfo.abbr}", "${modelInfo.fullName}"}, arity = "0..1",<#if modelInfo.description??>description = "${modelInfo.description}"</#if>, interactive = true
-    ,<#if modelInfo.defaultValue??>defaultValue = "${modelInfo.defaultValue?string}"</#if>,echo = true)
+    ,<#if modelInfo.defaultValue??>defaultValue = <#if modelInfo.defaultValue?is_string>"${modelInfo.defaultValue?string}"<#else>${modelInfo.defaultValue?c}</#if></#if>,echo = true)
     private ${modelInfo.type} ${modelInfo.fieldName};
 
 </#list>

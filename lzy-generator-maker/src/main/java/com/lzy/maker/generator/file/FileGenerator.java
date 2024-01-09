@@ -36,7 +36,7 @@ public class FileGenerator {
         //在静态文件的基础上生成动态文件
         String DynamicInputFilePath = projectPath+File.separator+"/src/main/resources/template";
         String DynamicOutputFilePath = StaticOutputFilePath+File.separator+"acm-template/src/com/lzy/acm";
-        String templateName = "MainTemplate.java.ftl";
+        String templateName = "DataModel.java.ftl";
         String generatorFileName = "MainTemplate.java";
         DynamicFileGenerator.dynamicGenerator(DynamicInputFilePath,DynamicOutputFilePath,templateName,generatorFileName,Model);
     }

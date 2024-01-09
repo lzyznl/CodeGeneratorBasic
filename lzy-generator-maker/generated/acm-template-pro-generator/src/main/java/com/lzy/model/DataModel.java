@@ -1,4 +1,4 @@
-package com.lzy.maker.model;
+package com.lzy.model;
 
 import lombok.Data;
 
@@ -13,13 +13,13 @@ public class DataModel {
     /**
      * 作者注释
      */
-    private String author  = lzy ;
+    private String author  = "lzy" ;
 
 
     /**
      * 输出信息
      */
-    private String outputText  = result: ;
+    private String outputText  = "result:" ;
 
 
     /**
