@@ -1,4 +1,4 @@
-package ${basePackage}.generator.file;
+package ${basePackage}.generator;
 
 import ${basePackage}.model.DataModel;
 import freemarker.template.TemplateException;
@@ -31,7 +31,7 @@ public class MainFileGenerator {
         finalInputPath=InputRootPath+File.separator+"${file.inputPath}";
         finalOutputPath = OutputRootPath+File.separator+"${file.outputPath}";
       <#if file.generateType == "Dynamic">
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,templateName,GeneratorTemplateName,Model);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,Model);
       <#else >
         StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
       </#if>

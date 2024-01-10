@@ -1,8 +1,8 @@
-package ${basePackage}.cli.command.CommandType;
+package ${basePackage}.cli.command;
 
 
 import freemarker.template.TemplateException;
-import ${basePackage}.generator.file.FileGenerator;
+import ${basePackage}.generator.MainFileGenerator;
 import ${basePackage}.model.DataModel;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -26,8 +26,8 @@ public class GeneratorCommand implements Runnable{
      */
     </#if>
     @Option(names = {"${modelInfo.abbr}", "${modelInfo.fullName}"}, arity = "0..1",<#if modelInfo.description??>description = "${modelInfo.description}"</#if>, interactive = true
-    ,<#if modelInfo.defaultValue??>defaultValue = <#if modelInfo.defaultValue?is_string>"${modelInfo.defaultValue?string}"<#else>${modelInfo.defaultValue?c}</#if></#if>,echo = true)
-    private ${modelInfo.type} ${modelInfo.fieldName};
+    ,<#if modelInfo.defaultValue??>defaultValue = "${modelInfo.defaultValue?string}"</#if>,echo = true)
+    private ${modelInfo.type} ${modelInfo.fieldName} <#if modelInfo.defaultValue??><#if modelInfo.defaultValue?is_boolean> = ${modelInfo.defaultValue?c}</#if></#if>;
 
 </#list>
 
@@ -38,7 +38,7 @@ public class GeneratorCommand implements Runnable{
         dataModel.setOutputText(outputText);
         dataModel.setAuthor(author);
         try {
-            FileGenerator.doCodeGenerator(dataModel);
+            MainFileGenerator.doCodeGenerator(dataModel);
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

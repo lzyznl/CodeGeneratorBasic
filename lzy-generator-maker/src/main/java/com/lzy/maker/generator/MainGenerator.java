@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class MainGenerator {
 
-    public static void main(String[] args) throws TemplateException, IOException {
+    public static void main(String[] args) throws TemplateException, IOException, InterruptedException {
         Meta metaModel = MetaManger.getMetaModel();
         String basePackage = metaModel.getBasePackage();
         String parseBasePackage = StrUtil.join(File.separator,StrUtil.split(basePackage,"."));
@@ -91,6 +91,14 @@ public class MainGenerator {
         finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"StaticFileGenerator.java";
         DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
 
+        finalInputPath = resourceAbsolutePath+File.separator+"template"+File.separator+"pom.xml.ftl";
+        finalOutputPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()+File.separator+"pom.xml";
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
+
+        String path = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName();
+
+        //构建Jar包
+        JarGenerator.doGenerate(path);
 
     }
 }

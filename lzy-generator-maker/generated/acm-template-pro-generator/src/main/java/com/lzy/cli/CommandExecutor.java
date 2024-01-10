@@ -1,8 +1,8 @@
-package com.lzy.maker.cli.command;
+package com.lzy.cli;
 
-import com.lzy.maker.cli.command.CommandType.ConfigCommand;
-import com.lzy.maker.cli.command.CommandType.GeneratorCommand;
-import com.lzy.maker.cli.command.CommandType.ListCommand;
+import com.lzy.cli.command.ConfigCommand;
+import com.lzy.cli.command.GeneratorCommand;
+import com.lzy.cli.command.ListCommand;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 

@@ -1,4 +1,4 @@
-package com.lzy.generator.file;
+package com.lzy.generator;
 
 import com.lzy.model.DataModel;
 import freemarker.template.TemplateException;
@@ -19,8 +19,8 @@ public class MainFileGenerator {
     public static void doCodeGenerator(Object Model) throws TemplateException, IOException {
 
         //修改为从元信息配置文件中读取配置
-        String InputRootPath = "D:\Java_Project\Code\lzy-generator\lzy-generator-demo-project\acm-template-pro";
-        String OutputRootPath = "D:\Java_Project\Code\lzy-generator\acm-template-pro";
+        String InputRootPath = "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/acm-template-pro";
+        String OutputRootPath = "D:/Java_Project/Code/lzy-generator/acm-template-pro";
 
         String finalInputPath;
         String finalOutputPath;
@@ -29,7 +29,7 @@ public class MainFileGenerator {
 
         finalInputPath=InputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java.ftl";
         finalOutputPath = OutputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,templateName,GeneratorTemplateName,Model);
+        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,Model);
         finalInputPath=InputRootPath+File.separator+".gitignore";
         finalOutputPath = OutputRootPath+File.separator+".gitignore";
         StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);

@@ -1,6 +1,6 @@
 package com.lzy;
 
-import com.lzy.maker.cli.CommandExecutor;
+import com.lzy.cli.CommandExecutor;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
 package com.lzy.maker.cli.command;
 
 
-import freemarker.template.TemplateException;
 import com.lzy.maker.generator.file.MainFileGenerator;
+import freemarker.template.TemplateException;
 import com.lzy.maker.model.DataModel;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

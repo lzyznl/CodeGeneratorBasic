@@ -1,4 +1,4 @@
-package ${basePackage}.cli.command.CommandType;
+package ${basePackage}.cli.command;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;

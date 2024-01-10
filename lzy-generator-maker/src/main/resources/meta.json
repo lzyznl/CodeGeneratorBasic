@@ -6,8 +6,8 @@
   "author": "lzyaaa",
   "createTime" : "2024-01-08",
   "fileConfig": {
-    "inputRootPath": "D:\\Java_Project\\Code\\lzy-generator\\lzy-generator-demo-project\\acm-template-pro",
-    "outputRootPath": "D:\\Java_Project\\Code\\lzy-generator\\acm-template-pro",
+    "inputRootPath": "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/acm-template-pro",
+    "outputRootPath": "D:/Java_Project/Code/lzy-generator/acm-template-pro",
     "type": "dir",
     "files": [
       {

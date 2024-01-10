@@ -1,8 +1,8 @@
-package com.lzy.cli.command.CommandType;
+package com.lzy.cli.command;
 
 
 import freemarker.template.TemplateException;
-import com.lzy.generator.file.FileGenerator;
+import com.lzy.generator.MainFileGenerator;
 import com.lzy.model.DataModel;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -24,7 +24,7 @@ public class GeneratorCommand implements Runnable{
      */
     @Option(names = {"-a", "--authorName"}, arity = "0..1",description = "作者注释", interactive = true
     ,defaultValue = "lzy",echo = true)
-    private String author;
+    private String author ;
 
 
     /**
@@ -32,15 +32,15 @@ public class GeneratorCommand implements Runnable{
      */
     @Option(names = {"-o", "--outputText"}, arity = "0..1",description = "输出信息", interactive = true
     ,defaultValue = "result:",echo = true)
-    private String outputText;
+    private String outputText ;
 
 
     /**
      * 是否开启循环
      */
     @Option(names = {"-l", "--loop"}, arity = "0..1",description = "是否开启循环", interactive = true
-    ,defaultValue = false,echo = true)
-    private boolean loop;
+    ,defaultValue = "false",echo = true)
+    private boolean loop  = false;
 
 
     @Override
@@ -50,7 +50,7 @@ public class GeneratorCommand implements Runnable{
         dataModel.setOutputText(outputText);
         dataModel.setAuthor(author);
         try {
-            FileGenerator.doCodeGenerator(dataModel);
+            MainFileGenerator.doCodeGenerator(dataModel);
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {

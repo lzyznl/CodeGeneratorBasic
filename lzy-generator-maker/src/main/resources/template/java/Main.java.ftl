@@ -1,6 +1,6 @@
 package ${basePackage};
 
-import ${basePackage}.maker.cli.CommandExecutor;
+import ${basePackage}.cli.CommandExecutor;
 
 public class Main {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.lzy.cli.command.CommandType;
+package com.lzy.cli.command;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
