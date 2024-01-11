@@ -17,7 +17,7 @@ public class ListCommand implements Runnable{
 
     @Override
     public void run() {
-        String InputPath = "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/acm-template-pro";
+        String InputPath = ".source/acm-template-pro";
         List<File> files = FileUtil.loopFiles(new File(InputPath));
         for(File file:files){
             System.out.println(file.getPath());

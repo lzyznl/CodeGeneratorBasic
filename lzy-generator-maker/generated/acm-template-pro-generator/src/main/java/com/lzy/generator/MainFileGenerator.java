@@ -19,13 +19,11 @@ public class MainFileGenerator {
     public static void doCodeGenerator(Object Model) throws TemplateException, IOException {
 
         //修改为从元信息配置文件中读取配置
-        String InputRootPath = "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/acm-template-pro";
-        String OutputRootPath = "D:/Java_Project/Code/lzy-generator/acm-template-pro";
+        String InputRootPath = ".source/acm-template-pro";
+        String OutputRootPath = "generated";
 
         String finalInputPath;
         String finalOutputPath;
-        String templateName = "MainTemplate.java.ftl";
-        String GeneratorTemplateName = "MainTemplate.java";
 
         finalInputPath=InputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java.ftl";
         finalOutputPath = OutputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java";

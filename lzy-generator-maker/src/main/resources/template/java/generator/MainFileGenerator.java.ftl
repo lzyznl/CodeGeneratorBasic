@@ -24,8 +24,6 @@ public class MainFileGenerator {
 
         String finalInputPath;
         String finalOutputPath;
-        String templateName = "MainTemplate.java.ftl";
-        String GeneratorTemplateName = "MainTemplate.java";
 
       <#list fileConfig.files as file>
         finalInputPath=InputRootPath+File.separator+"${file.inputPath}";

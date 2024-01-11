@@ -12,14 +12,6 @@ import java.io.IOException;
  * 总体代码文件生成器，包括动态文件生成以及静态文件生成
  */
 public class MainFileGenerator {
-
-    public static void main(String[] args) throws TemplateException, IOException {
-        DataModel dataModel = new DataModel();
-        dataModel.setOutputText("fact::");
-        dataModel.setLoop(false);
-        dataModel.setAuthor("zxqlzy");
-        doCodeGenerator(dataModel);
-    }
     /**
      * 动静结合，生成代码文件
      * @param Model 插值数据
