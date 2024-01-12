@@ -4,13 +4,12 @@ import java.util.Scanner;
 
 /**
  * ACM 输入模板（多数之和）
- * @author lzyzxqforever
+ * @author lzyzxqlzyzxq
  */
 public class MainTemplate {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        while (scanner.hasNext()) {
             // 读取输入元素个数
             int n = scanner.nextInt();
 
@@ -27,8 +26,7 @@ public class MainTemplate {
                 sum += num;
             }
 
-            System.out.println("result:" + sum);
-        }
+            System.out.println("fact::::" + sum);
 
         scanner.close();
     }

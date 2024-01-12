@@ -3,6 +3,7 @@ package com.lzy.maker.generator;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
+import com.lzy.maker.Main;
 import com.lzy.maker.generator.file.DynamicFileGenerator;
 import com.lzy.maker.meta.Meta;
 import com.lzy.maker.meta.MetaManger;
@@ -14,110 +15,11 @@ import java.io.IOException;
 /**
  * @author lzy
  * @date 2024-01-08
- * 总体代码生成类
+ * 总体代码生成类，继承自模板方法类
  */
-public class MainGenerator {
-
-    public static void main(String[] args) throws TemplateException, IOException, InterruptedException {
-        Meta metaModel = MetaManger.getMetaModel();
-        String basePackage = metaModel.getBasePackage();
-        String parseBasePackage = StrUtil.join(File.separator,StrUtil.split(basePackage,"."));
-        /**
-         * 最终生成文件路径
-         */
-        String finalOutputPath;
-        /**
-         * 最终输入文件路径
-         */
-        String finalInputPath;
-
-        //获取文件输出根路径
-        String OutputRootPath = System.getProperty("user.dir");
-        String OutPutProjectPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()
-                +File.separator+"src"+File.separator+"main"+File.separator+"java"+File.separator+parseBasePackage;
-        if(!FileUtil.exist(OutPutProjectPath)){
-            FileUtil.mkdir(OutPutProjectPath);
-        }
-
-        String sourceRootPath;
-        String destRootPath;
-        sourceRootPath = metaModel.getFileConfig().getSourceRootPath();
-        destRootPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()+File.separator
-                +".source";
-        FileUtil.copy(sourceRootPath,destRootPath,true);
-
-
-        //获取文件的输入根路径
-        ClassPathResource classPathResource = new ClassPathResource("");
-        String resourceAbsolutePath = classPathResource.getAbsolutePath();
-        String InputProjectPath = resourceAbsolutePath+File.separator+"template"+File.separator
-                +"java";
-
-
-        finalOutputPath = OutPutProjectPath+File.separator+"model"+File.separator+"DataModel.java";
-        finalInputPath = InputProjectPath+File.separator+"model"+File.separator+"DataModel.java.ftl";
-
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
-
-        /**
-         * 生成命令执行路径
-         */
-        //生成ConfigCommand
-        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ConfigCommand.java";
-        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ConfigCommand.java.ftl";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
-
-        //生成GeneratorCommand
-        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"GeneratorCommand.java";
-        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"GeneratorCommand.java.ftl";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
-
-        //生成ListCommand
-        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ListCommand.java";
-        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"command"+File.separator+"ListCommand.java.ftl";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
-
-        //生成CommandExecutor
-        finalOutputPath = OutPutProjectPath+File.separator+"cli"+File.separator+"CommandExecutor.java";
-        finalInputPath = InputProjectPath+File.separator+"cli"+File.separator+"CommandExecutor.java.ftl";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath, metaModel);
-
-        //生成Main.java
-        finalInputPath = InputProjectPath+File.separator+"Main.java.ftl";
-        finalOutputPath = OutPutProjectPath+File.separator+"Main.java";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
-
-        //生成DynamicFileGenerator,java
-        finalInputPath = InputProjectPath+File.separator+"generator"+File.separator+"DynamicFileGenerator,java.ftl";
-        finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"DynamicFileGenerator.java";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
-
-        //生成MainFileGenerator.java
-        finalInputPath = InputProjectPath+File.separator+"generator"+File.separator+"MainFileGenerator.java.ftl";
-        finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"MainFileGenerator.java";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
-
-        //生成StaticFileGenerator.java
-        finalInputPath = InputProjectPath+File.separator+"generator"+File.separator+"StaticFileGenerator.java.ftl";
-        finalOutputPath = OutPutProjectPath+File.separator+"generator"+File.separator+"StaticFileGenerator.java";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
-
-        //生成pom.xml
-        finalInputPath = resourceAbsolutePath+File.separator+"template"+File.separator+"pom.xml.ftl";
-        finalOutputPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()+File.separator+"pom.xml";
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,metaModel);
-
-
-        //构建Jar包
-        String path = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName();
-        JarGenerator.doGenerate(path);
-
-        //生成脚本
-        String scriptOutputPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()+File.separator+"generator";
-        String jarName = String.format("%s-%s-%s-jar-with-dependencies.jar",metaModel.getName(),metaModel.getVersion(),"SNAPSHOT");
-        String jarPath = OutputRootPath+File.separator+"generated"+File.separator+metaModel.getName()+File.separator
-                +"target"+File.separator+jarName;
-        ScriptGenerator.doGenerate(scriptOutputPath,jarPath,false);
-
+public class MainGenerator extends GeneratorTemplate{
+    @Override
+    protected void buildDist(Meta metaModel, String OutputRootPath, String jarName) {
+        super.buildDist(metaModel, OutputRootPath, jarName);
     }
 }

@@ -29,7 +29,7 @@ public class Meta {
         private String inputRootPath;
         private String outputRootPath;
         private String sourceRootPath;
-        private String type;
+        private String Type;
         private List<FilesInfo> files;
 
         @NoArgsConstructor

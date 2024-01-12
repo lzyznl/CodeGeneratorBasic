@@ -22,7 +22,7 @@ public class GeneratorCommand implements Runnable{
     /**
      * 作者注释
      */
-    @Option(names = {"-a", "--authorName"}, arity = "0..1",description = "作者注释", interactive = true
+    @Option(names = {"-a", "--author"}, arity = "0..1",description = "作者注释", interactive = true
     ,defaultValue = "lzy",echo = true)
     private String author ;
 

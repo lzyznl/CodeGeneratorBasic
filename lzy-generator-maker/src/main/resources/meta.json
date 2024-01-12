@@ -6,10 +6,8 @@
   "author": "lzyaaa",
   "createTime" : "2024-01-08",
   "fileConfig": {
-    "inputRootPath": ".source/acm-template-pro",
-    "outputRootPath": "generated",
     "sourceRootPath": "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/acm-template-pro",
-    "type": "dir",
+    "Type": "dir",
     "files": [
       {
         "inputPath": "src/com/lzy/acm/MainTemplate.java.ftl",
@@ -39,7 +37,7 @@
         "description": "作者注释",
         "defaultValue": "lzy",
         "abbr": "-a",
-        "fullName": "--authorName"
+        "fullName": "--author"
       },
       {
         "fieldName": "outputText",
