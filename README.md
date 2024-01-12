@@ -63,7 +63,7 @@
      >
      >​		优化过后，代码圈复杂度从原来的**平均45**到平均6.5
      >
-     >![image-20240112202209923](https://lzyzxq-1310836527.cos.ap-shanghai.myqcloud.com/code-complex.png)
+     >![image-20240104184537744](https://lzyzxq-1310836527.cos.ap-shanghai.myqcloud.com/code-complex.png)
      >
      >6：使用**设计模式**中的**模板方法模式**提高程序的可拓展性
      >
@@ -86,3 +86,4 @@
      >小李可能是：坐着吃饭，趴着睡觉，边看电视边打豆豆
      >
      >这种情况我们就可以用**模板方法模式**来解决这个问题
+
