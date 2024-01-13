@@ -11,21 +11,27 @@ import lombok.Data;
 public class DataModel {
 
     /**
+     * 是否需要生成.gitignore文件
+     */
+    public boolean needGit  = true ;
+
+
+    /**
      * 作者注释
      */
-    private String author  = "lzy" ;
+    public String author  = "lzy" ;
 
 
     /**
      * 输出信息
      */
-    private String outputText  = "result:" ;
+    public String outputText  = "result:" ;
 
 
     /**
      * 是否开启循环
      */
-    private boolean loop  = false ;
+    public boolean loop  = false ;
 
 
 

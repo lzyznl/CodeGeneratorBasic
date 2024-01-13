@@ -16,11 +16,21 @@
 
 使用示例
 
-> generate --a --o --l 
+> generate --needGit --a --o --l 
 
 ### 参数说明
 
-（1） author
+（1） needGit
+
+描述：是否需要生成.gitignore文件
+
+类型：boolean
+
+默认值：true
+
+命令缩写：-needGit
+
+（2） author
 
 描述：作者注释
 
@@ -30,7 +40,7 @@
 
 命令缩写：-a
 
-（2） outputText
+（3） outputText
 
 描述：输出信息
 
@@ -40,7 +50,7 @@
 
 命令缩写：-o
 
-（3） loop
+（4） loop
 
 描述：是否开启循环
 

@@ -16,7 +16,7 @@ public class DataModel {
      * ${modelInfo.description}
      */
     </#if>
-    private ${modelInfo.type} ${modelInfo.fieldName} <#if modelInfo.defaultValue??> = <#if modelInfo.defaultValue?is_string>"${modelInfo.defaultValue?string}"<#else>${modelInfo.defaultValue?c}</#if></#if> ;
+    public ${modelInfo.type} ${modelInfo.fieldName} <#if modelInfo.defaultValue??> = <#if modelInfo.defaultValue?is_string>"${modelInfo.defaultValue?string}"<#else>${modelInfo.defaultValue?c}</#if></#if> ;
 
 </#list>
 

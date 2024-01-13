@@ -20,6 +20,14 @@ public class GeneratorCommand implements Runnable{
 
 
     /**
+     * 是否需要生成.gitignore文件
+     */
+    @Option(names = {"-needGit", "--needGit"}, arity = "0..1",description = "是否需要生成.gitignore文件", interactive = true
+    ,defaultValue = "true",echo = true)
+    private boolean needGit  = true;
+
+
+    /**
      * 作者注释
      */
     @Option(names = {"-a", "--author"}, arity = "0..1",description = "作者注释", interactive = true
@@ -46,9 +54,10 @@ public class GeneratorCommand implements Runnable{
     @Override
     public void run() {
         DataModel dataModel = new DataModel();
-        dataModel.setLoop(loop);
-        dataModel.setOutputText(outputText);
-        dataModel.setAuthor(author);
+        dataModel.loop = loop;
+        dataModel.outputText = outputText;
+        dataModel.author = author;
+        dataModel.needGit = needGit;
         try {
             MainFileGenerator.doCodeGenerator(dataModel);
         } catch (TemplateException e) {

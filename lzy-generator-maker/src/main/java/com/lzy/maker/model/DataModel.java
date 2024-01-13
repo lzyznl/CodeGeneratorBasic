@@ -10,20 +10,22 @@ import lombok.Data;
 @Data
 public class DataModel {
 
+    public Boolean needGit;
+
     /**
      * 作者信息
      */
-    private String author;
+    public String author;
 
 
     /**
      * 修改程序输出提示信息
      */
-    private String outputText;
+    public String outputText;
 
     /**
      * 修改程序是否需要循环输入
      */
-    private Boolean loop;
+    public Boolean loop;
 
 }

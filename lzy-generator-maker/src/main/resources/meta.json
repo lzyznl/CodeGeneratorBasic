@@ -19,7 +19,8 @@
         "inputPath": ".gitignore",
         "outputPath": ".gitignore",
         "type": "file",
-        "generateType": "Static"
+        "generateType": "Static",
+        "condition": "needGit"
       },
       {
         "inputPath": "README.md",
@@ -31,6 +32,14 @@
   },
   "modelConfig": {
     "models": [
+      {
+        "fieldName": "needGit",
+        "type": "boolean",
+        "description": "是否需要生成.gitignore文件",
+        "defaultValue": true,
+        "abbr": "-needGit",
+        "fullName": "--needGit"
+      },
       {
         "fieldName": "author",
         "type": "String",

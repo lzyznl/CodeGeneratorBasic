@@ -16,7 +16,7 @@ public class MainFileGenerator {
      * 动静结合，生成代码文件
      * @param Model 插值数据
      */
-    public static void doCodeGenerator(Object Model) throws TemplateException, IOException {
+    public static void doCodeGenerator(DataModel Model) throws TemplateException, IOException {
 
         //修改为从元信息配置文件中读取配置
         String InputRootPath = "D:\\Java_Project\\Code\\lzy-generator\\lzy-generator-demo-project\\acm-template-pro";
@@ -25,6 +25,7 @@ public class MainFileGenerator {
         String finalInputPath;
         String finalOutputPath;
 
+        String author = Model.getAuthor();
 
         finalInputPath=InputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java.ftl";
         finalOutputPath = OutputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java";
