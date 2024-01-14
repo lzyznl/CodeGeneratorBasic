@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 
+
 /**
  * @author lzyaaa
  * @date 2024-01-08
@@ -30,23 +31,18 @@ public class MainFileGenerator {
         String outputText = Model.outputText;
         boolean loop = Model.loop;
 
-
         finalInputPath=InputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java.ftl";
         finalOutputPath = OutputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java";
         DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,Model);
-
-
+        // groupKey = configFile
         if(needGit){
             finalInputPath=InputRootPath+File.separator+".gitignore";
             finalOutputPath = OutputRootPath+File.separator+".gitignore";
             StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
+            finalInputPath=InputRootPath+File.separator+"README.md";
+            finalOutputPath = OutputRootPath+File.separator+"README.md";
+            StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
         }
-
-
-        finalInputPath=InputRootPath+File.separator+"README.md";
-        finalOutputPath = OutputRootPath+File.separator+"README.md";
-        StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
-
 
     }
 }

@@ -6,6 +6,16 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 
+<#macro generateFile indent paramsFile>
+${indent}finalInputPath=InputRootPath+File.separator+"${paramsFile.inputPath}";
+${indent}finalOutputPath = OutputRootPath+File.separator+"${paramsFile.outputPath}";
+<#if paramsFile.generateType == "Dynamic">
+${indent}DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,Model);
+<#else >
+${indent}StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
+</#if>
+</#macro>
+
 /**
  * @author ${author}
  * @date ${createTime}
@@ -30,27 +40,28 @@ public class MainFileGenerator {
       </#list>
 
       <#list fileConfig.files as file>
-
+        <#if file.groupKey??>
+        // groupKey = ${file.groupKey}
         <#if file.condition??>
         if(${file.condition}){
-            finalInputPath=InputRootPath+File.separator+"${file.inputPath}";
-            finalOutputPath = OutputRootPath+File.separator+"${file.outputPath}";
-            <#if file.generateType == "Dynamic">
-            DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,Model);
-            <#else >
-            StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
-            </#if>
+        <#list file.files as file>
+        <@generateFile paramsFile = file indent = "            "/>
+        </#list>
         }
-        <#else >
-        finalInputPath=InputRootPath+File.separator+"${file.inputPath}";
-        finalOutputPath = OutputRootPath+File.separator+"${file.outputPath}";
-        <#if file.generateType == "Dynamic">
-        DynamicFileGenerator.dynamicGenerator(finalInputPath,finalOutputPath,Model);
-        <#else >
-        StaticFileGenerator.copFileByHutool(finalInputPath,finalOutputPath);
+        <#else>
+        <#list file.files as file>
+        <@generateFile paramsFile= file indent="        "/>
+        </#list>
+        </#if>
+        <#else>
+        <#if file.condition??>
+        if(${file.condition}){
+        <@generateFile paramsFile = file indent = "            "/>
+        }
+        <#else>
+        <@generateFile paramsFile= file indent="        "/>
         </#if>
         </#if>
-
       </#list>
 
     }

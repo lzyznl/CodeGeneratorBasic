@@ -75,6 +75,10 @@ public class MetaValidator {
             throw new MetaException("没有对应的文件配置信息");
         }
         for (Meta.FileConfigDTO.FilesInfo info:files){
+            //todo 遇到文件组时先不对里面的路径做校验，随后再添加
+            if(info.getType().equals(FileTypeEnum.GROUP.getValue())){
+                continue;
+            }
             String inputPath = info.getInputPath();
             if(StrUtil.isBlank(inputPath)){
                 throw new MetaException("未填写InputPath");

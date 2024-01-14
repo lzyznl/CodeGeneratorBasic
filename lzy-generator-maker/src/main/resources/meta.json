@@ -6,6 +6,8 @@
   "author": "lzyaaa",
   "createTime" : "2024-01-08",
   "fileConfig": {
+    "inputRootPath": ".source/acm-template-pro",
+    "outputPath": "generated",
     "sourceRootPath": "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/acm-template-pro",
     "Type": "dir",
     "files": [
@@ -16,17 +18,24 @@
         "generateType": "Dynamic"
       },
       {
-        "inputPath": ".gitignore",
-        "outputPath": ".gitignore",
-        "type": "file",
-        "generateType": "Static",
-        "condition": "needGit"
-      },
-      {
-        "inputPath": "README.md",
-        "outputPath": "README.md",
-        "type": "file",
-        "generateType": "Static"
+        "groupKey": "configFile",
+        "groupDescription": "项目配置文件",
+        "type": "group",
+        "condition": "needGit",
+        "files": [
+          {
+            "inputPath": ".gitignore",
+            "outputPath": ".gitignore",
+            "type": "file",
+            "generateType": "Static"
+          },
+          {
+            "inputPath": "README.md",
+            "outputPath": "README.md",
+            "type": "file",
+            "generateType": "Static"
+          }
+        ]
       }
     ]
   },
