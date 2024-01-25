@@ -58,11 +58,15 @@ public class Meta {
             private String type;
             private String groupKey;
             private String groupName;
+            private String condition;
             private List<ModelsInfo> models;
             private String description;
             private Object defaultValue;
             private String abbr;
             private String fullName;
+
+            //设置一个中间参数，用户无需进行自定义，便于部分实现部分逻辑
+            private String mediumArgs;
         }
     }
 }

@@ -25,7 +25,7 @@ public class MainFileGenerator {
         String finalInputPath;
         String finalOutputPath;
 
-        String author = Model.getAuthor();
+        String author = Model.mainParam.author;
 
         finalInputPath=InputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java.ftl";
         finalOutputPath = OutputRootPath+File.separator+"src/com/lzy/acm/MainTemplate.java";

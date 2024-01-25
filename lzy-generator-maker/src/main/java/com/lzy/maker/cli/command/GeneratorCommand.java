@@ -51,8 +51,10 @@ public class GeneratorCommand implements Runnable{
     public void run() {
         DataModel dataModel = new DataModel();
         dataModel.loop = loop;
-        dataModel.outputText = outputText;
-        dataModel.author = author;
+        dataModel.mainParam.outputText = outputText;
+        dataModel.mainParam.author = author;
+//        dataModel.outputText = outputText;
+//        dataModel.author = author;
         dataModel.needGit = needGit;
         try {
             MainFileGenerator.doCodeGenerator(dataModel);

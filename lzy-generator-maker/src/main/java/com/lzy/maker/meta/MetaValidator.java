@@ -10,6 +10,7 @@ import com.lzy.maker.meta.enums.GenerateFileTypeEnum;
 
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 元信息校验类
@@ -40,6 +41,11 @@ public class MetaValidator {
 
                 //todo 此处如果是参数组则不进行校验
                 if(StrUtil.isNotEmpty(info.getGroupKey())){
+                    //进行参数的fullName拼接
+                    String mediumArgs = info.getModels().stream()
+                            .map(subModelInfo->String.format("\"--%s\"",subModelInfo.getFullName()))
+                            .collect(Collectors.joining(", "));
+                    info.setMediumArgs(mediumArgs);
                     continue;
                 }
 

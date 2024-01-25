@@ -51,7 +51,10 @@
       },
       {
         "groupName": "参数组",
-        "groupKey": "MainParam",
+        "groupKey": "mainParam",
+        "type": "MainParam",
+        "description": "参数组",
+        "condition": "loop",
         "models": [
           {
             "fieldName": "author",

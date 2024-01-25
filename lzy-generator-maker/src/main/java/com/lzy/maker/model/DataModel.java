@@ -13,19 +13,24 @@ public class DataModel {
     public Boolean needGit;
 
     /**
-     * 作者信息
-     */
-    public String author;
-
-
-    /**
-     * 修改程序输出提示信息
-     */
-    public String outputText;
-
-    /**
      * 修改程序是否需要循环输入
      */
     public Boolean loop;
+
+    public MainParam mainParam = new MainParam();
+
+    @Data
+    public static class MainParam {
+        /**
+         * 作者信息
+         */
+        public String author;
+
+
+        /**
+         * 修改程序输出提示信息
+         */
+        public String outputText;
+    }
 
 }
