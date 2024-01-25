@@ -50,20 +50,26 @@
         "fullName": "--needGit"
       },
       {
-        "fieldName": "author",
-        "type": "String",
-        "description": "作者注释",
-        "defaultValue": "lzy",
-        "abbr": "-a",
-        "fullName": "--author"
-      },
-      {
-        "fieldName": "outputText",
-        "type": "String",
-        "description": "输出信息",
-        "defaultValue": "result:",
-        "abbr": "-o",
-        "fullName": "--outputText"
+        "groupName": "参数组",
+        "groupKey": "MainParam",
+        "models": [
+          {
+            "fieldName": "author",
+            "type": "String",
+            "description": "作者注释",
+            "defaultValue": "lzy",
+            "abbr": "-a",
+            "fullName": "--author"
+          },
+          {
+            "fieldName": "outputText",
+            "type": "String",
+            "description": "输出信息",
+            "defaultValue": "result:",
+            "abbr": "-o",
+            "fullName": "--outputText"
+          }
+        ]
       },
       {
         "fieldName": "loop",

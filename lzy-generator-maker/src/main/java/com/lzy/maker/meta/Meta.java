@@ -56,6 +56,9 @@ public class Meta {
         public static class ModelsInfo {
             private String fieldName;
             private String type;
+            private String groupKey;
+            private String groupName;
+            private List<ModelsInfo> models;
             private String description;
             private Object defaultValue;
             private String abbr;

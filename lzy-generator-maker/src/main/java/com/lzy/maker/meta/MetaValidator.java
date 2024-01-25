@@ -24,6 +24,10 @@ public class MetaValidator {
         validModelConfigAndFill(meta);
     }
 
+    /**
+     * 校验模型配置相关信息
+     * @param meta
+     */
     private static void validModelConfigAndFill(Meta meta) {
         //元信息模型配置校验以及填充
         Meta.ModelConfigDTO modelConfig = meta.getModelConfig();
@@ -33,6 +37,12 @@ public class MetaValidator {
         }
         else{
             for (Meta.ModelConfigDTO.ModelsInfo info:models){
+
+                //todo 此处如果是参数组则不进行校验
+                if(StrUtil.isNotEmpty(info.getGroupKey())){
+                    continue;
+                }
+
                 String fieldName = info.getFieldName();
                 if(StrUtil.isBlank(fieldName)){
                     throw new MetaException("未填写 fieldName");
@@ -47,6 +57,10 @@ public class MetaValidator {
         }
     }
 
+    /**
+     * 校验文件配置相关信息
+     * @param meta
+     */
     private static void validFileConfigAndFill(Meta meta) {
         //元信息文件配置校验以及填充
         Meta.FileConfigDTO fileConfig = meta.getFileConfig();
@@ -109,6 +123,10 @@ public class MetaValidator {
         }
     }
 
+    /**
+     * 校验meta文件源文件根信息（基础信息）
+     * @param meta
+     */
     private static void validRootInfoAndFill(Meta meta) {
 
         String name = StrUtil.blankToDefault(meta.getName(), "my-generator");
