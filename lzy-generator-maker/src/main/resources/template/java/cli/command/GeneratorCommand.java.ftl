@@ -11,14 +11,14 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 
 <#--生成参数方法-->
-<#macro generateOptions indent modelInfo>
+<#macro generateOptions indent otherindent modelInfo>
 ${indent}<#if modelInfo.description??>
 ${indent}/**
 ${indent}* ${modelInfo.description}
 ${indent}*/
 </#if>
-${indent}@Option(names = {"${modelInfo.abbr}", "${modelInfo.fullName}"}, arity = "0..1",<#if modelInfo.description??>description = "${modelInfo.description}"</#if>, interactive = true
-,<#if modelInfo.defaultValue??>defaultValue = "${modelInfo.defaultValue?string}"</#if>,echo = true)
+${indent}@Option(names = {"${modelInfo.abbr}", "--${modelInfo.fullName}"}, arity = "0..1",<#if modelInfo.description??>description = "${modelInfo.description}"</#if>, interactive = true
+${otherindent},<#if modelInfo.defaultValue??>defaultValue = "${modelInfo.defaultValue?string}"</#if>,echo = true)
 ${indent}private ${modelInfo.type} ${modelInfo.fieldName} <#if modelInfo.defaultValue??><#if modelInfo.defaultValue?is_boolean> = ${modelInfo.defaultValue?c}</#if></#if>;
 </#macro>
 
@@ -34,7 +34,6 @@ ${indent}commandLine.execute(${modelInfo.mediumArgs});
  * @date ${createTime}
  * 生成文件夹子命令类
  */
-
 @Command(name = "generate", version = "Generator 1.0", mixinStandardHelpOptions = true)
 public class GeneratorCommand implements Runnable{
 
@@ -42,14 +41,14 @@ public class GeneratorCommand implements Runnable{
 
     <#if modelInfo.groupKey??>
     /**
-     *<#if modelInfo.groupName>modeInfo.groupName</#if>
+     *<#if modelInfo.groupName??>${modelInfo.groupName}</#if>
      */
     static DataModel.${modelInfo.type} ${modelInfo.groupKey} = new DataModel.${modelInfo.type}();
 
     @Command(name = "${modelInfo.groupKey}",mixinStandardHelpOptions = true)
     public static class ${modelInfo.type}Command implements Runnable{
     <#list modelInfo.models as subModelInfo>
-    <@generateOptions indent="        " modelInfo=subModelInfo/>
+    <@generateOptions indent="        " otherindent="            " modelInfo=subModelInfo/>
     </#list>
 
         @Override
@@ -60,7 +59,7 @@ public class GeneratorCommand implements Runnable{
         }
     }
     <#else >
-    <@generateOptions indent="    " modelInfo=modelInfo/>
+    <@generateOptions indent="    " otherindent= "            " modelInfo=modelInfo/>
     </#if>
 
 
@@ -71,11 +70,11 @@ public class GeneratorCommand implements Runnable{
     <#list modelConfig.models as modelInfo>
     <#if modelInfo.groupKey??>
     <#if modelInfo.condition??>
-    if(${modelInfo.condition}){
-    <@generateOptions indent="            " modelInfo=modelInfo/>
-    }
+        if(${modelInfo.condition}){
+        <@generateCommand indent="            " modelInfo=modelInfo/>
+        }
     <#else>
-    <@generateOptions indent="        " modelInfo=modelInfo/>
+    <@generateCommand indent="        " modelInfo=modelInfo/>
     </#if>
     </#if>
     </#list>

@@ -4,15 +4,12 @@ import java.util.Scanner;
 
 /**
  * ACM 输入模板（多数之和）
- * @author ${mainParam.author}
  */
 public class MainTemplate {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-<#if loop>
         while (scanner.hasNext()) {
-</#if>
             // 读取输入元素个数
             int n = scanner.nextInt();
 
@@ -29,10 +26,8 @@ public class MainTemplate {
                 sum += num;
             }
 
-            System.out.println("${mainParam.outputText}" + sum);
-<#if loop>
+            System.out.println("Sum: " + sum);
         }
-</#if>
 
         scanner.close();
     }

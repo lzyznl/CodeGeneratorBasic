@@ -1,5 +1,14 @@
 ### ${name}
+<#macro generateDescription indent modelInfo>
+描述：${modelInfo.description}
 
+类型：${modelInfo.type}
+
+默认值：<#if modelInfo.defaultValue??>${modelInfo.defaultValue?string}</#if>
+
+命令缩写：${modelInfo.abbr}
+
+</#macro>
 >项目描述: ${description}
 >
 >作者: lzy
@@ -16,19 +25,18 @@
 
 使用示例
 
-> generate <#list modelConfig.models as modelInfo>-${modelInfo.abbr} </#list>
+> generate <#list modelConfig.models as modelInfo><#if modelInfo.groupKey??><#list modelInfo.models as subModelInfo>-${subModelInfo.abbr} </#list><#else>-${modelInfo.abbr} </#if></#list>
 
 ### 参数说明
 
 <#list modelConfig.models as modelInfo>
+<#if modelInfo.groupKey??>
+（${modelInfo?index+1}）${modelInfo.groupName}
+<#list modelInfo.models as subModelInfo>
+<@generateDescription indent="" modelInfo=subModelInfo/>
+</#list>
+<#else >
 （${modelInfo?index+1}） ${modelInfo.fieldName}
-
-描述：${modelInfo.description}
-
-类型：${modelInfo.type}
-
-默认值：<#if modelInfo.defaultValue??>${modelInfo.defaultValue?string}</#if>
-
-命令缩写：${modelInfo.abbr}
-
+<@generateDescription indent="" modelInfo=modelInfo/>
+</#if>
 </#list>

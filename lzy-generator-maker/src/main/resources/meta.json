@@ -47,7 +47,7 @@
         "description": "是否需要生成.gitignore文件",
         "defaultValue": true,
         "abbr": "-needGit",
-        "fullName": "--needGit"
+        "fullName": "needGit"
       },
       {
         "groupName": "参数组",
@@ -62,7 +62,7 @@
             "description": "作者注释",
             "defaultValue": "lzy",
             "abbr": "-a",
-            "fullName": "--author"
+            "fullName": "author"
           },
           {
             "fieldName": "outputText",
@@ -70,7 +70,7 @@
             "description": "输出信息",
             "defaultValue": "result:",
             "abbr": "-o",
-            "fullName": "--outputText"
+            "fullName": "outputText"
           }
         ]
       },
@@ -80,7 +80,7 @@
         "description": "是否开启循环",
         "defaultValue": false,
         "abbr": "-l",
-        "fullName": "--loop"
+        "fullName": "loop"
       }
     ]
   }
