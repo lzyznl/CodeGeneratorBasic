@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 /**
  * ACM 输入模板（多数之和）
- * @author lzyznl-中科大等我
+ * @author lzy-一定会越来越好的
  */
 public class MainTemplate {
     public static void main(String[] args) {
@@ -27,7 +27,7 @@ public class MainTemplate {
                 sum += num;
             }
 
-            System.out.println("一定会成功" + sum);
+            System.out.println("我们都会有光明的未来" + sum);
         }
 
         scanner.close();

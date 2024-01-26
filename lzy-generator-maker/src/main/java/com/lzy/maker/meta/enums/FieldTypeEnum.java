@@ -5,7 +5,7 @@ package com.lzy.maker.meta.enums;
  * @date 2024-01-12
  * 模型参数类型枚举类
  */
-public enum FiledTypeEnum {
+public enum FieldTypeEnum {
 
     STRING("String","String"),
     BOOLEAN("Boolean","boolean");
@@ -14,7 +14,7 @@ public enum FiledTypeEnum {
 
     private final String value;
 
-    FiledTypeEnum(String text,String value) {
+    FieldTypeEnum(String text, String value) {
         this.text = text;
         this.value = value;
     }

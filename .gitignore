@@ -2,6 +2,7 @@
 # Compiled class file
 *.class
 
+.temp
 target
 .idea
 lzy-generator.iml

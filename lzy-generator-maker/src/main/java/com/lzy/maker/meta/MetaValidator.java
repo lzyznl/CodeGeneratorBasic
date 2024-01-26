@@ -5,7 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.lzy.maker.meta.enums.FileTypeEnum;
-import com.lzy.maker.meta.enums.FiledTypeEnum;
+import com.lzy.maker.meta.enums.FieldTypeEnum;
 import com.lzy.maker.meta.enums.GenerateFileTypeEnum;
 
 import java.nio.file.Paths;
@@ -55,7 +55,7 @@ public class MetaValidator {
                 }
 
                 String type = info.getType();
-                info.setType(StrUtil.blankToDefault(type, FiledTypeEnum.STRING.getValue()));
+                info.setType(StrUtil.blankToDefault(type, FieldTypeEnum.STRING.getValue()));
 
                 String fullName = info.getFullName();
                 info.setFullName(StrUtil.blankToDefault(fullName,"--"+fieldName));
