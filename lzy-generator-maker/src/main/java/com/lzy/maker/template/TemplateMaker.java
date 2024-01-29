@@ -12,6 +12,7 @@ import com.lzy.maker.meta.enums.GenerateFileTypeEnum;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 /**
@@ -36,10 +37,13 @@ public class TemplateMaker {
             //使用雪花算法生成一个唯一的id作为每一次生成文件的目录名
             id = IdUtil.getSnowflakeNextId();
         }
+
         //生成一个基本的模板制作工具，我们基本需要从以下几个方面进行生成
         //1：找到原始的输入文件
         String projectPath = System.getProperty("user.dir");
         sourceRootPath = sourceRootPath.replaceAll("\\\\", "/");
+
+
         //2：转移到一个新的隔离的工作目录下，避免污染原始文件目录
         String tempDir = projectPath+File.separator+".temp";
         String subTempPath = tempDir+File.separator+id;
@@ -48,18 +52,25 @@ public class TemplateMaker {
             FileUtil.mkdir(subTempPath);
             FileUtil.copy(sourceRootPath,subTempPath,true);
         }
-        //3：确定输入文件路径以及输出文件路径
+
+
+        //3：确定输入文件绝对路径以及输出文件绝对路径
         String outputPath = inputPath+".ftl";
         String copiedDirName = FileUtil.getLastPathEle(Paths.get(sourceRootPath)).toString();
         String fileInputPath = subTempPath+File.separator+copiedDirName+File.separator+inputPath;
         String fileOutputPath = subTempPath+File.separator+copiedDirName+File.separator+outputPath;
+
+
         //4：元信息中的文件配置信息
-        //todo 随后这边应该也是需要进行抽离的，可能会有多个文件要进行挖坑
         Meta.FileConfigDTO.FilesInfo filesInfo = new Meta.FileConfigDTO.FilesInfo();
-        filesInfo.setInputPath(inputPath);
-        filesInfo.setOutputPath(outputPath);
+        //对InputPath和OutPutPath路径分隔符进行处理
+        String newInputPath = inputPath.replaceAll("\\\\", "/");
+        String newOutputPath = outputPath.replaceAll("\\\\","/");
+        filesInfo.setInputPath(newInputPath);
+        filesInfo.setOutputPath(newOutputPath);
         filesInfo.setType(FileTypeEnum.FILE.getValue());
-        filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
+
+
         //5：开始生成对应的动态模板文件以及元信息文件
         //5.1生成动态模板文件
         //判断一下是不是首次制作，如果是首次制作就读取源文件内容，如果不是首次挖坑就读取上一次挖坑好后的文件内容
@@ -74,8 +85,17 @@ public class TemplateMaker {
         //进行替换
         String replacement = String.format("${%s}",modelInfo.getFieldName());
         String replaceContent = StrUtil.replace(sourceContent, searchStr, replacement);
-        //将替换后的内容生成到输出文件当中
-        FileUtil.writeUtf8String(replaceContent,new File(fileOutputPath));
+        //将替换后的内容与原始内容进行对比，避免生成一些没有挖坑的文件
+        if(sourceContent.equals(replaceContent)){
+            filesInfo.setOutputPath(newInputPath);
+            filesInfo.setGenerateType(GenerateFileTypeEnum.STATIC.getValue());
+        }else{
+            filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
+            //将替换后的内容生成到输出文件当中
+            FileUtil.writeUtf8String(replaceContent,new File(fileOutputPath));
+        }
+
+
         //5.2 生成meta元信息文件
         String metaOutputPath = subTempPath+File.separator+copiedDirName+File.separator+"meta.json";
         //同样需要判断meta元信息文件是否生成，如果已经生成，那么就是增加配置，如果还没有生成，那么就是创建配置
@@ -120,6 +140,29 @@ public class TemplateMaker {
         return id;
     }
 
+
+    public static void makeMoreFileTemplate(String sourceRootPath, List<String> inputPathList, Meta newMeta, Meta.ModelConfigDTO.ModelsInfo modelInfo,String searchStr,Long id){
+        if (id==null){
+            //使用雪花算法生成一个唯一的id作为每一次生成文件的目录名
+            id = IdUtil.getSnowflakeNextId();
+        }
+        for(String inputPath:inputPathList){
+            String fileAbsolutePath = sourceRootPath+File.separator+inputPath;
+            if(FileUtil.isDirectory(new File(fileAbsolutePath))){
+                //判断是文件夹是则进行遍历
+                List<File> files = FileUtil.loopFiles(new File(fileAbsolutePath));
+                for(File file:files){
+                    String absolutePath = file.getAbsolutePath();
+                    String fileInputPath = absolutePath.replace(sourceRootPath+File.separator, "");
+                    makeTemplate(sourceRootPath,fileInputPath,newMeta,modelInfo,searchStr,id);
+                }
+            }else{
+                //不是文件无需遍历
+                makeTemplate(sourceRootPath,inputPath,newMeta,modelInfo,searchStr,id);
+            }
+        }
+    }
+
     /**
      * 实现文件去重
      * @param filesInfos
@@ -148,8 +191,15 @@ public class TemplateMaker {
 
     public static void main(String[] args) {
         String projectPath = System.getProperty("user.dir");
-        String sourceRootPath = new File(projectPath).getParent()+File.separator+"lzy-generator-demo-project/acm-template";
-        String inputPath = "src/com/lzy/acm/MainTemplate.java";
+//        String sourceRootPath = new File(projectPath).getParent()+File.separator+"lzy-generator-demo-project"+File.separator+"acm-template";
+//        String inputPath = "src/com/lzy/acm/MainTemplate.java";
+
+        String sourceRootPath = new File(projectPath).getParent()+File.separator+"lzy-generator-demo-project"+File.separator+"springboot-init-master";
+        String inputPath = "src/main/java/com/yupi/springbootinit";
+        String inputPath1 = "src/main/java/com/yupi/springbootinit/common";
+        String inputPath2 = "src/main/java/com/yupi/springbootinit/aop";
+
+        List<String> inputPathList = Arrays.asList(inputPath1,inputPath2);
 
 
         Meta meta = new Meta();
@@ -176,8 +226,8 @@ public class TemplateMaker {
 //        String searchStr = "Sum: ";
 
         //(第二次生成)
-        String searchStr = "MainTemplate";
+        String searchStr = "BaseResponse";
 
-        makeTemplate(sourceRootPath,inputPath,meta,modelInfo,searchStr,1750857753164410880L);
+        makeMoreFileTemplate(sourceRootPath, inputPathList,meta,modelInfo,searchStr,null);
     }
 }
