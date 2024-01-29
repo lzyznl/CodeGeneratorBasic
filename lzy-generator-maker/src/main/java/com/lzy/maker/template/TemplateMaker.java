@@ -9,6 +9,12 @@ import cn.hutool.json.JSONUtil;
 import com.lzy.maker.meta.Meta;
 import com.lzy.maker.meta.enums.FileTypeEnum;
 import com.lzy.maker.meta.enums.GenerateFileTypeEnum;
+import com.lzy.maker.template.Filter.FileFilter;
+import com.lzy.maker.template.model.FileFilterConfig;
+import com.lzy.maker.template.model.TemplateMakerFileConfig;
+import com.lzy.maker.template.model.enums.FilterRangeEnum;
+import com.lzy.maker.template.model.enums.FilterTypeEnum;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -141,16 +147,27 @@ public class TemplateMaker {
     }
 
 
-    public static void makeMoreFileTemplate(String sourceRootPath, List<String> inputPathList, Meta newMeta, Meta.ModelConfigDTO.ModelsInfo modelInfo,String searchStr,Long id){
+    /**
+     * 目录下所有模板文件生成或者多个路径下所有模板文件生成
+     * @param sourceRootPath
+     * @param templateMakerFileConfig
+     * @param newMeta
+     * @param modelInfo
+     * @param searchStr
+     * @param id
+     */
+    public static void makeMoreFileTemplate(String sourceRootPath, TemplateMakerFileConfig templateMakerFileConfig, Meta newMeta, Meta.ModelConfigDTO.ModelsInfo modelInfo, String searchStr, Long id){
         if (id==null){
             //使用雪花算法生成一个唯一的id作为每一次生成文件的目录名
             id = IdUtil.getSnowflakeNextId();
         }
-        for(String inputPath:inputPathList){
+        List<TemplateMakerFileConfig.FileInfoConfig> fileInfoConfigList = templateMakerFileConfig.getFiles();
+        for (TemplateMakerFileConfig.FileInfoConfig fileInfoConfig : fileInfoConfigList){
+            String inputPath = fileInfoConfig.getPath();
             String fileAbsolutePath = sourceRootPath+File.separator+inputPath;
             if(FileUtil.isDirectory(new File(fileAbsolutePath))){
-                //判断是文件夹是则进行遍历
-                List<File> files = FileUtil.loopFiles(new File(fileAbsolutePath));
+                //对指定路径下的文件夹进行过滤，随后返回过滤完成后的文件列表，进行之后的操作
+                List<File> files = FileFilter.doMoreFileFilter(fileAbsolutePath, fileInfoConfig.getFilterConfigs());
                 for(File file:files){
                     String absolutePath = file.getAbsolutePath();
                     String fileInputPath = absolutePath.replace(sourceRootPath+File.separator, "");
@@ -197,7 +214,7 @@ public class TemplateMaker {
         String sourceRootPath = new File(projectPath).getParent()+File.separator+"lzy-generator-demo-project"+File.separator+"springboot-init-master";
         String inputPath = "src/main/java/com/yupi/springbootinit";
         String inputPath1 = "src/main/java/com/yupi/springbootinit/common";
-        String inputPath2 = "src/main/java/com/yupi/springbootinit/aop";
+        String inputPath2 = "src/main/java/com/yupi/springbootinit/controller";
 
         List<String> inputPathList = Arrays.asList(inputPath1,inputPath2);
 
@@ -209,6 +226,28 @@ public class TemplateMaker {
         meta.setName(name);
         meta.setDescription(description);
         meta.setBasePackage(basePackage);
+
+        //添加文件过滤器
+        TemplateMakerFileConfig config = new TemplateMakerFileConfig();
+        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
+        FileFilterConfig filterConfig1 = FileFilterConfig.builder()
+                .range(FilterRangeEnum.FILENAME.getValue())
+                .rule(FilterTypeEnum.CONTAINS.getValue())
+                .value("Base").build();
+        List<FileFilterConfig> filterConfigList = Arrays.asList(filterConfig1);
+        fileInfoConfig1.setPath(inputPath1);
+        fileInfoConfig1.setFilterConfigs(filterConfigList);
+
+        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig2 = new TemplateMakerFileConfig.FileInfoConfig();
+        fileInfoConfig2.setPath(inputPath2);
+        FileFilterConfig filterConfig2 = FileFilterConfig.builder()
+                        .range(FilterRangeEnum.FILENAME.getValue())
+                                .rule(FilterTypeEnum.STARTS_WITH.getValue())
+                                        .value("File").build();
+        fileInfoConfig2.setFilterConfigs(Arrays.asList(filterConfig2));
+
+        config.setFiles(Arrays.asList(fileInfoConfig1,fileInfoConfig2));
+
 
 
         //(第一次生成)
@@ -228,6 +267,6 @@ public class TemplateMaker {
         //(第二次生成)
         String searchStr = "BaseResponse";
 
-        makeMoreFileTemplate(sourceRootPath, inputPathList,meta,modelInfo,searchStr,null);
+        makeMoreFileTemplate(sourceRootPath, config,meta,modelInfo,searchStr,null);
     }
 }
