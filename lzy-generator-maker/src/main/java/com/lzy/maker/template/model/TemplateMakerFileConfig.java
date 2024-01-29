@@ -14,10 +14,21 @@ public class TemplateMakerFileConfig {
 
     private List<FileInfoConfig> files;
 
+    private FileGroupInfoConfig fileGroupInfoConfig;
+
     @Data
     public static class FileInfoConfig{
         private String path;
 
         private List<FileFilterConfig> filterConfigs;
+    }
+
+    @Data
+    public static class FileGroupInfoConfig{
+        private String condition;
+
+        private String groupKey;
+
+        private String groupDescription;
     }
 }
