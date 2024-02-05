@@ -65,14 +65,16 @@ public class TemplateMaker {
         List<Meta.FileConfigDTO.FilesInfo> newFileInfoList = new ArrayList<>();
         for(TemplateMakerFileConfig.FileInfoConfig fileInfoConfig:templateMakerFileConfig.getFiles()){
             String inputFilePath = fileInfoConfig.getPath();
+            String currentSourceRootPath = "";
             //如果是相对路径，则改为绝对路径
             if(!inputFilePath.startsWith(sourceRootPath)){
-                inputFilePath = subTempPath+File.separator+copiedDirName+File.separator+inputFilePath;
+                currentSourceRootPath = subTempPath+File.separator+copiedDirName;
+                inputFilePath = currentSourceRootPath+File.separator+inputFilePath;
             }
             //获取到过滤后的文件列表
             List<File> fileList = FileFilter.doMoreFileFilter(inputFilePath,fileInfoConfig.getFilterConfigs());
             for(File file:fileList){
-                Meta.FileConfigDTO.FilesInfo filesInfo = getFilesInfo(modelInfo, sourceRootPath,searchStr,file);
+                Meta.FileConfigDTO.FilesInfo filesInfo = getFilesInfo(modelInfo,currentSourceRootPath,searchStr,file);
                 newFileInfoList.add(filesInfo);
             }
         }
@@ -140,17 +142,19 @@ public class TemplateMaker {
 
     private static Meta.FileConfigDTO.FilesInfo getFilesInfo(Meta.ModelConfigDTO.ModelsInfo modelInfo, String sourceRootPath,String searchStr, File file) {
         String inputPath = file.getAbsolutePath();
-        String fileInputPath = inputPath;
-        String fileOutputPath = inputPath+".ftl";
+        sourceRootPath = sourceRootPath.replaceAll("\\\\","/");
+        String replacedFilePath = inputPath.replaceAll("\\\\", "/");
+        String finalInputPath = replacedFilePath.replace(sourceRootPath + "/", "");
+        String fileInputPath = finalInputPath;
+        String fileOutputPath = finalInputPath+".ftl";
+        String fileInputAbsolutePath = file.getAbsolutePath();
+        String fileOutputAbsolutePath = file.getAbsolutePath()+".ftl";
 
 
         //4：元信息中的文件配置信息
         Meta.FileConfigDTO.FilesInfo filesInfo = new Meta.FileConfigDTO.FilesInfo();
-        //对InputPath和OutPutPath路径分隔符进行处理
-        String newInputPath = fileInputPath.replace(sourceRootPath+File.separator,"").replaceAll("\\\\", "/");
-        String newOutputPath = fileOutputPath.replace(sourceRootPath+File.separator,"").replaceAll("\\\\","/");
-        filesInfo.setInputPath(newInputPath);
-        filesInfo.setOutputPath(newOutputPath);
+        filesInfo.setInputPath(fileInputPath);
+        filesInfo.setOutputPath(fileOutputPath);
         filesInfo.setType(FileTypeEnum.FILE.getValue());
 
 
@@ -158,24 +162,24 @@ public class TemplateMaker {
         //5.1生成动态模板文件
         //判断一下是不是首次制作，如果是首次制作就读取源文件内容，如果不是首次挖坑就读取上一次挖坑好后的文件内容
         String sourceContent;
-        if(FileUtil.exist(fileOutputPath)){
+        if(FileUtil.exist(fileOutputAbsolutePath)){
             //不是首次制作
-            sourceContent = FileUtil.readUtf8String(new File(fileOutputPath));
+            sourceContent = FileUtil.readUtf8String(new File(fileOutputAbsolutePath));
         }else{
             //是首次制作
-            sourceContent = FileUtil.readUtf8String(new File(fileInputPath));
+            sourceContent = FileUtil.readUtf8String(new File(fileInputAbsolutePath));
         }
         //进行替换
         String replacement = String.format("${%s}", modelInfo.getFieldName());
         String replaceContent = StrUtil.replace(sourceContent, searchStr, replacement);
         //将替换后的内容与原始内容进行对比，避免生成一些没有挖坑的文件
         if(sourceContent.equals(replaceContent)){
-            filesInfo.setOutputPath(newInputPath);
+            filesInfo.setOutputPath(fileInputPath);
             filesInfo.setGenerateType(GenerateFileTypeEnum.STATIC.getValue());
         }else{
             filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
             //将替换后的内容生成到输出文件当中
-            FileUtil.writeUtf8String(replaceContent,new File(fileOutputPath));
+            FileUtil.writeUtf8String(replaceContent,new File(fileOutputAbsolutePath));
         }
         return filesInfo;
     }
@@ -245,73 +249,4 @@ public class TemplateMaker {
                         ).values());
     }
 
-    public static void main(String[] args) {
-        String projectPath = System.getProperty("user.dir");
-//        String sourceRootPath = new File(projectPath).getParent()+File.separator+"lzy-generator-demo-project"+File.separator+"acm-template";
-//        String inputPath = "src/com/lzy/acm/MainTemplate.java";
-
-        String sourceRootPath = new File(projectPath).getParent()+File.separator+"lzy-generator-demo-project"+File.separator+"springboot-init-master";
-        String inputPath = "src/main/java/com/yupi/springbootinit";
-        String inputPath1 = "src/main/java/com/yupi/springbootinit/aop";
-        String inputPath2 = "src/main/java/com/yupi/springbootinit/controller";
-
-        List<String> inputPathList = Arrays.asList(inputPath1,inputPath2);
-
-
-        Meta meta = new Meta();
-        String name = "acm-template";
-        String description = "ACM模板示例代码生成器";
-        String basePackage = "com.lzy";
-        meta.setName(name);
-        meta.setDescription(description);
-        meta.setBasePackage(basePackage);
-
-        //添加文件过滤器
-        TemplateMakerFileConfig config = new TemplateMakerFileConfig();
-        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
-        FileFilterConfig filterConfig1 = FileFilterConfig.builder()
-                .range(FilterRangeEnum.FILENAME.getValue())
-                .rule(FilterTypeEnum.CONTAINS.getValue())
-                .value("Auth").build();
-        List<FileFilterConfig> filterConfigList = Arrays.asList(filterConfig1);
-        fileInfoConfig1.setPath(inputPath1);
-        fileInfoConfig1.setFilterConfigs(filterConfigList);
-
-        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig2 = new TemplateMakerFileConfig.FileInfoConfig();
-        fileInfoConfig2.setPath(inputPath2);
-        FileFilterConfig filterConfig2 = FileFilterConfig.builder()
-                        .range(FilterRangeEnum.FILENAME.getValue())
-                                .rule(FilterTypeEnum.STARTS_WITH.getValue())
-                                        .value("User").build();
-        fileInfoConfig2.setFilterConfigs(Arrays.asList(filterConfig2));
-
-        //设置文件分组
-        TemplateMakerFileConfig.FileGroupInfoConfig fileGroupInfoConfig = new TemplateMakerFileConfig.FileGroupInfoConfig();
-        fileGroupInfoConfig.setCondition("test");
-        fileGroupInfoConfig.setGroupKey("test");
-        fileGroupInfoConfig.setGroupDescription("测试");
-        config.setFileGroupInfoConfig(fileGroupInfoConfig);
-        config.setFiles(Arrays.asList(fileInfoConfig1,fileInfoConfig2));
-
-
-
-        //(第一次生成)
-//        Meta.ModelConfigDTO.ModelsInfo modelInfo = new Meta.ModelConfigDTO.ModelsInfo();
-//        modelInfo.setFieldName("outputText");
-//        modelInfo.setType("String");
-//        modelInfo.setDefaultValue("fact= ");
-
-        //(第二次生成)
-        Meta.ModelConfigDTO.ModelsInfo modelInfo = new Meta.ModelConfigDTO.ModelsInfo();
-        modelInfo.setFieldName("className");
-        modelInfo.setType("String");
-
-        //(第一次生成)
-//        String searchStr = "Sum: ";
-
-        //(第二次生成)
-        String searchStr = "BaseResponse";
-
-        makeTemplate(sourceRootPath, config,meta,modelInfo,searchStr,1751968815796342784L);
-    }
 }
