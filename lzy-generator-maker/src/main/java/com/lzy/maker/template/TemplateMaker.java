@@ -11,7 +11,9 @@ import com.lzy.maker.meta.Meta;
 import com.lzy.maker.meta.enums.FileTypeEnum;
 import com.lzy.maker.meta.enums.GenerateFileTypeEnum;
 import com.lzy.maker.template.Filter.FileFilter;
+import com.lzy.maker.template.model.TemplateMakerConfig;
 import com.lzy.maker.template.model.TemplateMakerFileConfig;
+import com.lzy.maker.template.model.TemplateMakerModelConfig;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -24,19 +26,17 @@ import java.util.stream.Collectors;
  */
 public class TemplateMaker {
 
-    //todo 这个模板制作工具还是有bug感觉
 
     /**
      * 制作模板
-     * @param sourceRootPath 源文件的路径
-     * @param templateMakerFileConfig 模板文件配置类
      * @param newMeta   元信息的根信息
-     * @param modelInfo 元信息中的模型信息
-     * @param searchStr 所要替换的字符串内容
-     * @param id        所对应的临时目录
+     * @param sourceRootPath 源文件的路径
+     * @param templateMakerFileConfig 模板制作工具文件配置类
+     * @param templateMakerModelConfig 模板制作工具模型配置类
+     * @param id  所对应的临时目录id
      * @return
      */
-    public static long makeTemplate(String sourceRootPath, TemplateMakerFileConfig templateMakerFileConfig, Meta newMeta, Meta.ModelConfigDTO.ModelsInfo modelInfo,String searchStr,Long id){
+    public static long makeTemplate(Meta newMeta, String sourceRootPath, TemplateMakerFileConfig templateMakerFileConfig, TemplateMakerModelConfig templateMakerModelConfig, Long id){
         if (id==null){
             //使用雪花算法生成一个唯一的id作为每一次生成文件的目录名
             id = IdUtil.getSnowflakeNextId();
@@ -54,6 +54,33 @@ public class TemplateMaker {
         if(!FileUtil.exist(subTempPath)){
             FileUtil.mkdir(subTempPath);
             FileUtil.copy(sourceRootPath,subTempPath,true);
+        }
+
+        //处理模型组
+        List<TemplateMakerModelConfig.ModelInfoConfig> modelConfigList = templateMakerModelConfig.getModels();
+        List<Meta.ModelConfigDTO.ModelsInfo> modelsInfoList = modelConfigList.stream()
+                .map(modelInfoConfig -> {
+                    Meta.ModelConfigDTO.ModelsInfo modelsInfo = new Meta.ModelConfigDTO.ModelsInfo();
+                    BeanUtil.copyProperties(modelInfoConfig, modelsInfo);
+                    return modelsInfo;
+                }).collect(Collectors.toList());
+        List<Meta.ModelConfigDTO.ModelsInfo> newModelsInfoList = new ArrayList<>();
+        TemplateMakerModelConfig.ModelGroupConfig modelGroupConfig = templateMakerModelConfig.getModelGroupConfig();
+        if(modelGroupConfig!=null){
+            //有模型分组
+            String condition = modelGroupConfig.getCondition();
+            String groupKey = modelGroupConfig.getGroupKey();
+            String groupName = modelGroupConfig.getGroupName();
+
+            Meta.ModelConfigDTO.ModelsInfo modelsInfo = new Meta.ModelConfigDTO.ModelsInfo();
+            modelsInfo.setGroupKey(groupKey);
+            modelsInfo.setCondition(condition);
+            modelsInfo.setGroupName(groupName);
+            modelsInfo.setModels(modelsInfoList);
+            newModelsInfoList.add(modelsInfo);
+        }else{
+            //没有模型分组
+            newModelsInfoList.addAll(modelsInfoList);
         }
 
         //3：确定输入文件绝对路径以及输出文件绝对路径
@@ -74,7 +101,7 @@ public class TemplateMaker {
             fileList = fileList.stream()
                     .filter(file -> !file.getAbsolutePath().endsWith(".ftl")).collect(Collectors.toList());
             for(File file:fileList){
-                Meta.FileConfigDTO.FilesInfo filesInfo = getFilesInfo(modelInfo,currentSourceRootPath,searchStr,file);
+                Meta.FileConfigDTO.FilesInfo filesInfo = getFilesInfo(templateMakerModelConfig,currentSourceRootPath,file);
                 newFileInfoList.add(filesInfo);
             }
         }
@@ -111,7 +138,7 @@ public class TemplateMaker {
             List<Meta.FileConfigDTO.FilesInfo> filesInfos = newMeta.getFileConfig().getFiles();
             filesInfos.addAll(newFileInfoList);
             List<Meta.ModelConfigDTO.ModelsInfo> models = newMeta.getModelConfig().getModels();
-            models.add(modelInfo);
+            models.addAll(newModelsInfoList);
             
             //对追加后的配置进行去重处理
             newMeta.getFileConfig().setFiles(distinctFiles(filesInfos));
@@ -130,7 +157,7 @@ public class TemplateMaker {
             //填充模型配置
             Meta.ModelConfigDTO modelConfig = new Meta.ModelConfigDTO();
             List<Meta.ModelConfigDTO.ModelsInfo> modelInfoList = new ArrayList<>();
-            modelInfoList.add(modelInfo);
+            modelInfoList.addAll(newModelsInfoList);
             modelConfig.setModels(modelInfoList);
             newMeta.setModelConfig(modelConfig);
             //生成元信息文件
@@ -140,7 +167,7 @@ public class TemplateMaker {
         return id;
     }
 
-    private static Meta.FileConfigDTO.FilesInfo getFilesInfo(Meta.ModelConfigDTO.ModelsInfo modelInfo, String sourceRootPath,String searchStr, File file) {
+    private static Meta.FileConfigDTO.FilesInfo getFilesInfo(TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath, File file) {
         String inputPath = file.getAbsolutePath();
         sourceRootPath = sourceRootPath.replaceAll("\\\\","/");
         String replacedFilePath = inputPath.replaceAll("\\\\", "/");
@@ -150,16 +177,6 @@ public class TemplateMaker {
         String fileInputAbsolutePath = file.getAbsolutePath();
         String fileOutputAbsolutePath = file.getAbsolutePath()+".ftl";
 
-
-        //4：元信息中的文件配置信息
-        Meta.FileConfigDTO.FilesInfo filesInfo = new Meta.FileConfigDTO.FilesInfo();
-        filesInfo.setInputPath(fileOutputPath);
-        filesInfo.setOutputPath(fileInputPath);
-        filesInfo.setType(FileTypeEnum.FILE.getValue());
-
-
-        //5：开始生成对应的动态模板文件以及元信息文件
-        //5.1生成动态模板文件
         //判断一下是不是首次制作，如果是首次制作就读取源文件内容，如果不是首次挖坑就读取上一次挖坑好后的文件内容
         String sourceContent;
         boolean hasTemplate = FileUtil.exist(fileOutputAbsolutePath);
@@ -170,11 +187,36 @@ public class TemplateMaker {
             //是首次制作
             sourceContent = FileUtil.readUtf8String(new File(fileInputAbsolutePath));
         }
-        //进行替换
-        String replacement = String.format("${%s}", modelInfo.getFieldName());
-        String replaceContent = StrUtil.replace(sourceContent, searchStr, replacement);
+
+        String newFileContent = sourceContent;
+        //处理模型信息，遍历模型集合，对一个文件进行多次挖坑操作
+        List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigs = templateMakerModelConfig.getModels();
+        TemplateMakerModelConfig.ModelGroupConfig modelGroupConfig = templateMakerModelConfig.getModelGroupConfig();
+        for(TemplateMakerModelConfig.ModelInfoConfig modelInfoConfig:modelInfoConfigs){
+            String fieldName = modelInfoConfig.getFieldName();
+            String replacement;
+            if(modelGroupConfig==null){
+                //没有模型分组，只是简单的多个模型
+                replacement = String.format("${%s}", fieldName);
+            }else{
+                //存在模型分组
+                String groupKey = modelGroupConfig.getGroupKey();
+                replacement = String.format("${%s.%s}",groupKey,fieldName);
+            }
+            newFileContent = StrUtil.replace(newFileContent,modelInfoConfig.getReplaceText(),replacement);
+        }
+
+        //4：元信息中的文件配置信息
+        Meta.FileConfigDTO.FilesInfo filesInfo = new Meta.FileConfigDTO.FilesInfo();
+        filesInfo.setInputPath(fileOutputPath);
+        filesInfo.setOutputPath(fileInputPath);
+        filesInfo.setType(FileTypeEnum.FILE.getValue());
+
+
+        //5：开始生成对应的动态模板文件以及元信息文件
+        //5.1生成动态模板文件
         //将替换后的内容与原始内容进行对比，避免生成一些没有挖坑的文件
-        boolean contentEquals = sourceContent.equals(replaceContent);
+        boolean contentEquals = sourceContent.equals(newFileContent);
         //没有模板文件，同时没有内容更改，那么就是静态文件
         if(!hasTemplate){
             if(contentEquals){
@@ -182,14 +224,14 @@ public class TemplateMaker {
                 filesInfo.setGenerateType(GenerateFileTypeEnum.STATIC.getValue());
             }else{
                 //生成动态文件
-                FileUtil.writeUtf8String(replaceContent,new File(fileOutputAbsolutePath));
+                FileUtil.writeUtf8String(newFileContent,new File(fileOutputAbsolutePath));
                 filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
             }
         }else{
             filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
             if(!contentEquals){
                 //将替换后的内容生成到输出文件当中
-                FileUtil.writeUtf8String(replaceContent,new File(fileOutputAbsolutePath));
+                FileUtil.writeUtf8String(newFileContent,new File(fileOutputAbsolutePath));
             }
         }
         return filesInfo;
@@ -197,7 +239,7 @@ public class TemplateMaker {
 
 
     /**
-     * 实现文件去重(同时实现对分组的去重)
+     * 实现文件去重(同时实现对文件分组的去重)
      * @param filesInfos
      * @return
      */
@@ -251,16 +293,64 @@ public class TemplateMaker {
     }
 
     /**
-     * 实现模型数据去重
+     * 实现模型数据去重(同时实现对模型分组的去重)
      * @param modelsInfos
      * @return
      */
     public static List<Meta.ModelConfigDTO.ModelsInfo> distinctModels(List<Meta.ModelConfigDTO.ModelsInfo> modelsInfos){
-        return new ArrayList(
-                modelsInfos.stream()
-                        .collect(
-                                Collectors.toMap(Meta.ModelConfigDTO.ModelsInfo::getFieldName, v->v,(exits, replacement)->replacement)
-                        ).values());
+        //首先先对分组去重,过滤出所有的分组
+        Map<String, List<Meta.ModelConfigDTO.ModelsInfo>> waitProcessMap = modelsInfos.stream()
+                .filter(modelsInfo -> {
+                    return StrUtil.isNotBlank(modelsInfo.getGroupKey());
+                }).collect(
+                        Collectors.groupingBy(Meta.ModelConfigDTO.ModelsInfo::getGroupKey)
+                );
+        Map<String, Meta.ModelConfigDTO.ModelsInfo> distinctMap = new HashMap<>();
+        //对分组进行打散，然后进行去重
+        for(Map.Entry<String,List<Meta.ModelConfigDTO.ModelsInfo>> entry:waitProcessMap.entrySet()){
+            List<Meta.ModelConfigDTO.ModelsInfo> tempModelInfoList = entry.getValue();
+            ArrayList<Meta.ModelConfigDTO.ModelsInfo> distinctModelInfoList = new ArrayList<>(tempModelInfoList.stream()
+                    .flatMap(modelsInfo -> modelsInfo.getModels().stream())
+                    .collect(Collectors.toMap(Meta.ModelConfigDTO.ModelsInfo::getFieldName, o -> o, (exists, replacement) -> replacement))
+                    .values());
+            //更新当前最新的modelInfo分组配置
+            Meta.ModelConfigDTO.ModelsInfo modelsInfo = CollUtil.getLast(tempModelInfoList);
+            modelsInfo.setModels(distinctModelInfoList);
+            String groupKey = entry.getKey();
+            distinctMap.put(groupKey,modelsInfo);
+        }
+        List<Meta.ModelConfigDTO.ModelsInfo> distinctModelsInfoList = new ArrayList<>();
+
+        distinctModelsInfoList.addAll(distinctMap.values());
+
+        //接下来对不是分组的模型进行去重处理
+        List<Meta.ModelConfigDTO.ModelsInfo> noGroupList = modelsInfos.stream()
+                .filter(modelsInfo -> {
+                    return StrUtil.isBlank(modelsInfo.getGroupKey());
+                }).collect(Collectors.toList());
+
+        ArrayList<Meta.ModelConfigDTO.ModelsInfo> distinctNoGroupList = new ArrayList<>(noGroupList.stream()
+                .collect(Collectors.toMap(
+                        Meta.ModelConfigDTO.ModelsInfo::getFieldName, o -> o, (exists, replacement) -> replacement)
+                ).values());
+        distinctModelsInfoList.addAll(distinctNoGroupList);
+
+        return distinctModelsInfoList;
+    }
+
+
+    /**
+     * 重载方法，接收封装参数
+     * @param templateMakerConfig
+     * @return
+     */
+    public static long makeTemplate(TemplateMakerConfig templateMakerConfig){
+        Meta meta = templateMakerConfig.getMeta();
+        String sourceRootPath = templateMakerConfig.getSourceRootPath();
+        TemplateMakerFileConfig templateMakerFileConfig = templateMakerConfig.getFileConfig();
+        TemplateMakerModelConfig templateMakerModelConfig = templateMakerConfig.getModelConfig();
+        Long id = templateMakerConfig.getId();
+        return makeTemplate(meta,sourceRootPath,templateMakerFileConfig,templateMakerModelConfig,id);
     }
 
 }

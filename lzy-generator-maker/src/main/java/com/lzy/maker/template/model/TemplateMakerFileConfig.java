@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author lzy
  * @date 2024-01-29
- * 模板制作工具所要过滤文件配置类
+ * 模板制作工具文件配置类
  */
 @Data
 public class TemplateMakerFileConfig {

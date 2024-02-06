@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "name": "acm-template",
+    "description": "ACM模板示例代码生成器",
+    "basePackage": "com.lzy"
+  },
+  "sourceRootPath": "D:/Java_Project/Code/lzy-generator/lzy-generator-demo-project/springboot-init-master",
+  "fileConfig": {
+    "files": [
+      {
+        "path": "src/main/java/com/yupi/springbootinit/controller"
+      }
+    ]
+  },
+  "modelConfig": {
+    "models":[
+      {
+        "fieldName": "className",
+        "defaultValue": "BaseResponse",
+        "replaceText": "BaseResponse",
+        "type": "String"
+      }
+    ]
+  }
+}
