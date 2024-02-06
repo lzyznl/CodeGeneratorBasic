@@ -11,10 +11,7 @@ import com.lzy.maker.meta.Meta;
 import com.lzy.maker.meta.enums.FileTypeEnum;
 import com.lzy.maker.meta.enums.GenerateFileTypeEnum;
 import com.lzy.maker.template.Filter.FileFilter;
-import com.lzy.maker.template.model.FileFilterConfig;
 import com.lzy.maker.template.model.TemplateMakerFileConfig;
-import com.lzy.maker.template.model.enums.FilterRangeEnum;
-import com.lzy.maker.template.model.enums.FilterTypeEnum;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -73,6 +70,9 @@ public class TemplateMaker {
             }
             //获取到过滤后的文件列表
             List<File> fileList = FileFilter.doMoreFileFilter(inputFilePath,fileInfoConfig.getFilterConfigs());
+            //对过滤后的文件列表再次进行过滤，过滤出文件名称尾部有.ftl文件
+            fileList = fileList.stream()
+                    .filter(file -> !file.getAbsolutePath().endsWith(".ftl")).collect(Collectors.toList());
             for(File file:fileList){
                 Meta.FileConfigDTO.FilesInfo filesInfo = getFilesInfo(modelInfo,currentSourceRootPath,searchStr,file);
                 newFileInfoList.add(filesInfo);
@@ -97,7 +97,7 @@ public class TemplateMaker {
         }
 
         //5.2 生成meta元信息文件
-        String metaOutputPath = subTempPath+File.separator+copiedDirName+File.separator+"meta.json";
+        String metaOutputPath = subTempPath+File.separator+"meta.json";
         //同样需要判断meta元信息文件是否生成，如果已经生成，那么就是增加配置，如果还没有生成，那么就是创建配置
         if (FileUtil.exist(metaOutputPath)){
             //已经生成，追加配置即可
@@ -153,8 +153,8 @@ public class TemplateMaker {
 
         //4：元信息中的文件配置信息
         Meta.FileConfigDTO.FilesInfo filesInfo = new Meta.FileConfigDTO.FilesInfo();
-        filesInfo.setInputPath(fileInputPath);
-        filesInfo.setOutputPath(fileOutputPath);
+        filesInfo.setInputPath(fileOutputPath);
+        filesInfo.setOutputPath(fileInputPath);
         filesInfo.setType(FileTypeEnum.FILE.getValue());
 
 
@@ -162,7 +162,8 @@ public class TemplateMaker {
         //5.1生成动态模板文件
         //判断一下是不是首次制作，如果是首次制作就读取源文件内容，如果不是首次挖坑就读取上一次挖坑好后的文件内容
         String sourceContent;
-        if(FileUtil.exist(fileOutputAbsolutePath)){
+        boolean hasTemplate = FileUtil.exist(fileOutputAbsolutePath);
+        if(hasTemplate){
             //不是首次制作
             sourceContent = FileUtil.readUtf8String(new File(fileOutputAbsolutePath));
         }else{
@@ -173,20 +174,30 @@ public class TemplateMaker {
         String replacement = String.format("${%s}", modelInfo.getFieldName());
         String replaceContent = StrUtil.replace(sourceContent, searchStr, replacement);
         //将替换后的内容与原始内容进行对比，避免生成一些没有挖坑的文件
-        if(sourceContent.equals(replaceContent)){
-            filesInfo.setOutputPath(fileInputPath);
-            filesInfo.setGenerateType(GenerateFileTypeEnum.STATIC.getValue());
+        boolean contentEquals = sourceContent.equals(replaceContent);
+        //没有模板文件，同时没有内容更改，那么就是静态文件
+        if(!hasTemplate){
+            if(contentEquals){
+                filesInfo.setInputPath(fileInputPath);
+                filesInfo.setGenerateType(GenerateFileTypeEnum.STATIC.getValue());
+            }else{
+                //生成动态文件
+                FileUtil.writeUtf8String(replaceContent,new File(fileOutputAbsolutePath));
+                filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
+            }
         }else{
             filesInfo.setGenerateType(GenerateFileTypeEnum.DYNAMIC.getValue());
-            //将替换后的内容生成到输出文件当中
-            FileUtil.writeUtf8String(replaceContent,new File(fileOutputAbsolutePath));
+            if(!contentEquals){
+                //将替换后的内容生成到输出文件当中
+                FileUtil.writeUtf8String(replaceContent,new File(fileOutputAbsolutePath));
+            }
         }
         return filesInfo;
     }
 
 
     /**
-     * 实现文件去重
+     * 实现文件去重(同时实现对分组的去重)
      * @param filesInfos
      * @return
      */
@@ -210,12 +221,15 @@ public class TemplateMaker {
             ArrayList<Meta.FileConfigDTO.FilesInfo> distinctList = new ArrayList<>(tempGroupList.stream()
                     .flatMap(filesInfo -> filesInfo.getFiles().stream())
                     .collect(
-                            Collectors.toMap(Meta.FileConfigDTO.FilesInfo::getInputPath, v -> v, (exits, replacement) -> replacement)
+                            Collectors.toMap(Meta.FileConfigDTO.FilesInfo::getOutputPath, v -> v, (exits, replacement) -> replacement)
                     ).values());
             //使用当前最新的group配置
-            Meta.FileConfigDTO.FilesInfo newsFileInfo = CollUtil.getLast(filesInfos);
+            //获取到当前GroupKey分组下最后一个filesInfo
+            Meta.FileConfigDTO.FilesInfo newsFileInfo = CollUtil.getLast(tempGroupList);
+            //将该filesInfo的files列表设置为去重后的列表
             newsFileInfo.setFiles(distinctList);
             String key = entry.getKey();
+            //添加到去重后的map当中
             distinctMap.put(key,newsFileInfo);
         }
 
@@ -230,7 +244,7 @@ public class TemplateMaker {
         finalDistinctList.addAll( new ArrayList(
         noGroupList.stream()
                 .collect(
-                        Collectors.toMap(Meta.FileConfigDTO.FilesInfo::getInputPath,v->v,(exits,replacement)->replacement)
+                        Collectors.toMap(Meta.FileConfigDTO.FilesInfo::getOutputPath,v->v,(exits,replacement)->replacement)
                 ).values()));
 
         return finalDistinctList;

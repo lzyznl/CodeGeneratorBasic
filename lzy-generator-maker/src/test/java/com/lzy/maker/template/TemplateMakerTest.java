@@ -55,13 +55,13 @@ public class TemplateMakerTest {
         FileFilterConfig filterConfig2 = FileFilterConfig.builder()
                 .range(FilterRangeEnum.FILENAME.getValue())
                 .rule(FilterTypeEnum.STARTS_WITH.getValue())
-                .value("User").build();
+                .value("File").build();
         fileInfoConfig2.setFilterConfigs(Arrays.asList(filterConfig2));
 
         //设置文件分组
         TemplateMakerFileConfig.FileGroupInfoConfig fileGroupInfoConfig = new TemplateMakerFileConfig.FileGroupInfoConfig();
-        fileGroupInfoConfig.setCondition("test");
-        fileGroupInfoConfig.setGroupKey("test");
+        fileGroupInfoConfig.setCondition("test1");
+        fileGroupInfoConfig.setGroupKey("test1");
         fileGroupInfoConfig.setGroupDescription("测试");
         config.setFileGroupInfoConfig(fileGroupInfoConfig);
         config.setFiles(Arrays.asList(fileInfoConfig1,fileInfoConfig2));
@@ -85,6 +85,6 @@ public class TemplateMakerTest {
         //(第二次生成)
         String searchStr = "BaseResponse";
 
-        TemplateMaker.makeTemplate(sourceRootPath, config,meta,modelInfo,searchStr,1754521574135508992L);
+        TemplateMaker.makeTemplate(sourceRootPath, config,meta,modelInfo,searchStr,1754715694820990976L);
     }
 }
