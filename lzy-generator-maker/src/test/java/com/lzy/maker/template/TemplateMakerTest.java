@@ -116,7 +116,7 @@ public class TemplateMakerTest {
         //(第二次生成)
 //        String searchStr = "BaseResponse";
 
-        TemplateMaker.makeTemplate(meta,sourceRootPath,templateMakerFileConfig,templateMakerModelConfig,1754715694820990976L);
+        //TemplateMaker.makeTemplate(meta,sourceRootPath,templateMakerFileConfig,templateMakerModelConfig,1754715694820990976L);
     }
 
     public static void makeTemplateTest2(){
@@ -126,6 +126,24 @@ public class TemplateMakerTest {
     }
 
     public static void main(String[] args) {
-        TemplateMakerTest.makeTemplateTest2();
+        TemplateMakerTest.makeTemplateTest3();
+    }
+
+    public static void makeTemplateTest3(){
+        String configStr = ResourceUtil.readUtf8Str("example/templateMaker1.json");
+        TemplateMakerConfig templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
+
+        configStr = ResourceUtil.readUtf8Str("example/templateMaker2.json");
+        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
+
+        configStr = ResourceUtil.readUtf8Str("example/templateMaker3.json");
+        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
+
+        configStr = ResourceUtil.readUtf8Str("example/templateMaker4.json");
+        templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        TemplateMaker.makeTemplate(templateMakerConfig);
     }
 }

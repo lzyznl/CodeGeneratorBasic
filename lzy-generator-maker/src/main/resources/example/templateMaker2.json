@@ -1,0 +1,26 @@
+{
+  "id": "1",
+  "meta": {
+    "name": "springboot-init-generator",
+    "description": "springboot项目快速生成器",
+    "version": "1.0",
+    "author": "lzy"
+  },
+  "fileConfig": {
+    "files": [
+      {
+        "path": "src/main"
+      }
+    ]
+  },
+  "modelConfig": {
+    "models": [
+      {
+        "fieldName" : "basePackage",
+        "description": "项目基础包名",
+        "defaultValue": "com.lzy",
+        "replaceText": "com.yupi"
+      }
+    ]
+  }
+}

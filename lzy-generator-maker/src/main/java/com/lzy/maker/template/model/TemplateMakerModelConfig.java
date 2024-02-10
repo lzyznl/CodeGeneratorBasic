@@ -27,6 +27,7 @@ public class TemplateMakerModelConfig {
 
         private Object defaultValue;
 
+
         private String abbr;
 
         //要替换的文本

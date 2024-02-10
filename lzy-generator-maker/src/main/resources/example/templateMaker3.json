@@ -1,0 +1,38 @@
+{
+  "id": "1",
+  "meta": {
+    "name": "springboot-init-generator",
+    "description": "springboot项目快速生成器",
+    "version": "1.0",
+    "author": "lzy"
+  },
+  "fileConfig": {
+    "files": [
+      {
+        "path": "src/main",
+        "filterConfigs": [
+          {
+            "range": "fileName",
+            "rule": "contains",
+            "value": "Post"
+          }
+        ]
+      }
+    ],
+    "fileGroupInfoConfig": {
+      "groupKey": "post",
+      "groupDescription": "帖子相关功能是否开启",
+      "condition": "needPost"
+    }
+  },
+  "modelConfig": {
+    "models": [
+      {
+        "fieldName": "needPost",
+        "description": "是否开启帖子功能",
+        "defaultValue": "true",
+        "type": "boolean"
+      }
+    ]
+  }
+}
